@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>潮汐指標｜交易系統秘笈 — 操作手冊</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@200;300;400;500;600&family=Noto+Sans+TC:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F8F6F0;
+    --paper-deep:#F1EDE3;
+    --ink:#2E2C27;
+    --ink-soft:#5C5A52;
+    --ink-faint:#A19D8E;
+    --accent:#7C8FA0;
+    --accent-deep:#5F7488;
+    --accent-soft:rgba(124,143,160,0.09);
+    --hairline:rgba(46,44,39,0.09);
+    --glass-a:rgba(255,255,255,0.60);
+    --glass-b:rgba(255,255,255,0.30);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink-soft);
+    font-family:'Noto Sans TC','Noto Serif TC',serif;
+    font-weight:300;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+    overflow-x:hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important; scroll-behavior:auto !important;}
+  }
+
+  /* ---------- ambient washi light ---------- */
+  .light-orb{
+    position:fixed;
+    border-radius:50%;
+    filter:blur(90px);
+    pointer-events:none;
+    z-index:0;
+    opacity:0.55;
+  }
+  .light-orb.a{
+    width:520px;height:520px;
+    top:-180px; left:-120px;
+    background:radial-gradient(circle, rgba(124,143,160,0.30), transparent 70%);
+    animation:drift1 26s ease-in-out infinite;
+  }
+  .light-orb.b{
+    width:460px;height:460px;
+    top:280px; right:-160px;
+    background:radial-gradient(circle, rgba(210,196,168,0.28), transparent 70%);
+    animation:drift2 32s ease-in-out infinite;
+  }
+  @keyframes drift1{
+    0%,100%{transform:translate(0,0);}
+    50%{transform:translate(40px,60px);}
+  }
+  @keyframes drift2{
+    0%,100%{transform:translate(0,0);}
+    50%{transform:translate(-50px,-40px);}
+  }
+
+  .washi-grain{
+    position:fixed; inset:0; z-index:1;
+    pointer-events:none;
+    opacity:0.05;
+    mix-blend-mode:multiply;
+  }
+
+  /* ---------- reading progress ---------- */
+  .progress-bar{
+    position:fixed; top:0; left:0; height:2px;
+    background:var(--accent);
+    width:0%;
+    z-index:900;
+    transition:width 0.1s linear;
+  }
+
+  /* ---------- sticky mini header ---------- */
+  .mini-nav{
+    position:fixed; top:0; left:0; right:0;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 2rem;
+    height:52px;
+    background:rgba(248,246,240,0.72);
+    backdrop-filter:blur(14px) saturate(140%);
+    border-bottom:1px solid transparent;
+    z-index:800;
+    transform:translateY(-100%);
+    transition:transform 0.4s ease, border-color 0.4s ease;
+  }
+  .mini-nav.show{
+    transform:translateY(0);
+    border-bottom-color:var(--hairline);
+  }
+  .mini-nav .brand{
+    font-family:'Noto Serif TC',serif;
+    font-weight:400;
+    letter-spacing:0.12em;
+    font-size:0.82rem;
+    color:var(--ink);
+  }
+  .mini-nav a.toc-link{
+    font-size:0.78rem;
+    letter-spacing:0.08em;
+    color:var(--ink-soft);
+    text-decoration:none;
+    border-bottom:1px solid var(--hairline);
+    padding-bottom:2px;
+    transition:color 0.25s, border-color 0.25s;
+  }
+  .mini-nav a.toc-link:hover{ color:var(--accent-deep); border-color:var(--accent); }
+
+  /* ---------- layout shell ---------- */
+  .wrap{
+    position:relative; z-index:2;
+    max-width:56rem;
+    margin:0 auto;
+    padding:7rem 1.5rem 8rem;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    text-align:center;
+    margin-bottom:5rem;
+  }
+  .hero .eyebrow{
+    display:inline-block;
+    font-size:0.72rem;
+    letter-spacing:0.35em;
+    color:var(--accent-deep);
+    text-transform:uppercase;
+    margin-bottom:1.6rem;
+  }
+  .hero h1{
+    font-family:'Noto Serif TC',serif;
+    font-weight:300;
+    font-size:clamp(2.2rem, 5vw, 3.4rem);
+    letter-spacing:0.14em;
+    color:var(--ink);
+    margin:0 0 0.9rem;
+  }
+  .hero .subtitle{
+    font-family:'Noto Serif TC',serif;
+    font-weight:300;
+    font-size:1.05rem;
+    letter-spacing:0.08em;
+    color:var(--ink-soft);
+    margin:0 0 2.4rem;
+  }
+  .hero .lead{
+    max-width:34rem;
+    margin:0 auto;
+    font-size:0.98rem;
+    line-height:1.9;
+    color:var(--ink-soft);
+  }
+  .hero .divider{
+    width:44px; height:1px;
+    background:var(--ink-faint);
+    margin:2.2rem auto;
+    opacity:0.6;
+  }
+
+  /* ---------- TOC ---------- */
+  .toc{
+    margin:0 auto 6rem;
+    max-width:38rem;
+  }
+  .toc-title{
+    font-size:0.74rem;
+    letter-spacing:0.35em;
+    color:var(--ink-faint);
+    text-transform:uppercase;
+    margin-bottom:1.4rem;
+    text-align:center;
+  }
+  .toc-list{
+    list-style:none;
+    margin:0; padding:0;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:0.9rem 2.4rem;
+  }
+  @media (max-width:640px){
+    .toc-list{ grid-template-columns:1fr; }
+  }
+  .toc-list li a{
+    display:flex;
+    align-items:baseline;
+    gap:0.7rem;
+    text-decoration:none;
+    color:var(--ink-soft);
+    font-size:0.92rem;
+    letter-spacing:0.02em;
+    padding-bottom:0.55rem;
+    border-bottom:1px solid var(--hairline);
+    transition:color 0.25s, border-color 0.25s, padding-left 0.25s;
+  }
+  .toc-list li a:hover{
+    color:var(--accent-deep);
+    border-color:var(--accent);
+    padding-left:0.3rem;
+  }
+  .toc-num{
+    font-family:'Noto Serif TC',serif;
+    color:var(--accent-deep);
+    font-size:0.82rem;
+    flex-shrink:0;
+  }
+
+  /* ---------- post / section card ---------- */
+  .post{
+    position:relative;
+    background:linear-gradient(175deg, var(--glass-a), var(--glass-b));
+    backdrop-filter:blur(22px) saturate(140%);
+    -webkit-backdrop-filter:blur(22px) saturate(140%);
+    border:1px solid var(--hairline);
+    border-radius:3px;
+    box-shadow:0 30px 70px -55px rgba(46,44,39,0.35);
+    padding:3.4rem 3.2rem;
+    margin-bottom:3.2rem;
+  }
+  @media (max-width:640px){
+    .post{ padding:2.4rem 1.5rem; }
+  }
+
+  .post-tag{
+    display:inline-block;
+    font-size:0.68rem;
+    letter-spacing:0.2em;
+    color:var(--accent-deep);
+    background:var(--accent-soft);
+    border:1px solid rgba(124,143,160,0.25);
+    padding:0.3rem 0.7rem;
+    border-radius:2px;
+    margin-bottom:1.4rem;
+  }
+
+  h2{
+    font-family:'Noto Serif TC',serif;
+    font-weight:400;
+    font-size:1.55rem;
+    letter-spacing:0.12em;
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    gap:1rem;
+    margin:0 0 1.6rem;
+  }
+  h2 .bar{
+    display:inline-block;
+    width:2px;
+    height:1.15em;
+    background:var(--ink);
+    opacity:0.55;
+    flex-shrink:0;
+  }
+
+  h3{
+    font-family:'Noto Serif TC',serif;
+    font-weight:500;
+    font-size:1.08rem;
+    letter-spacing:0.06em;
+    color:var(--ink);
+    margin:2.4rem 0 1rem;
+  }
+  .post-full h3:first-of-type{ margin-top:0.4rem; }
+
+  p{
+    line-height:1.9;
+    font-size:0.98rem;
+    color:var(--ink-soft);
+    margin:0 0 1.3rem;
+  }
+
+  ul, ol{
+    margin:0 0 1.4rem;
+    padding-left:1.3rem;
+    color:var(--ink-soft);
+  }
+  li{
+    line-height:1.85;
+    font-size:0.98rem;
+    margin-bottom:0.6rem;
+  }
+  li::marker{ color:var(--accent-deep); }
+
+  strong{ color:var(--ink); font-weight:500; }
+
+  .teaser{ }
+  .post-full{ display:none; }
+  .post-full.open{ display:block; animation:fadeIn 0.5s ease; }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);} }
+
+  .read-more{
+    display:inline-flex;
+    align-items:center;
+    gap:0.5rem;
+    background:none;
+    border:none;
+    cursor:pointer;
+    font-family:'Noto Sans TC',sans-serif;
+    font-size:0.86rem;
+    letter-spacing:0.1em;
+    color:var(--accent-deep);
+    padding:0.4rem 0;
+    border-bottom:1px solid var(--accent);
+    margin-top:0.6rem;
+    transition:letter-spacing 0.25s, color 0.25s;
+  }
+  .read-more:hover{ letter-spacing:0.16em; color:var(--ink); }
+  .read-more .arrow{ transition:transform 0.3s; }
+  .read-more.expanded .arrow{ transform:rotate(180deg); }
+
+  /* ---------- callout / blockquote ---------- */
+  .callout{
+    border-left:3px solid var(--accent);
+    background:rgba(124,143,160,0.055);
+    padding:1.1rem 1.5rem;
+    margin:1.8rem 0;
+    border-radius:0 2px 2px 0;
+  }
+  .callout p{
+    margin:0;
+    font-size:0.92rem;
+    line-height:1.85;
+    color:var(--ink-soft);
+  }
+  .callout p + p{ margin-top:0.7rem; }
+  .callout .callout-label{
+    display:block;
+    font-size:0.68rem;
+    letter-spacing:0.2em;
+    color:var(--accent-deep);
+    margin-bottom:0.5rem;
+  }
+
+  /* ---------- tables ---------- */
+  .table-wrap{
+    overflow-x:auto;
+    margin:1.6rem 0 2rem;
+  }
+  table.clean{
+    width:100%;
+    border-collapse:collapse;
+    font-size:0.88rem;
+  }
+  table.clean th{
+    text-align:left;
+    font-family:'Noto Serif TC',serif;
+    font-weight:500;
+    letter-spacing:0.04em;
+    color:var(--ink);
+    padding:0.7rem 1rem;
+    border-bottom:1px solid var(--ink-faint);
+    white-space:nowrap;
+  }
+  table.clean td{
+    padding:0.85rem 1rem;
+    border-bottom:1px solid var(--hairline);
+    color:var(--ink-soft);
+    line-height:1.7;
+    vertical-align:top;
+  }
+  table.clean tr:last-child td{ border-bottom:none; }
+  table.clean td.num, table.clean th.num{ white-space:nowrap; color:var(--accent-deep); font-family:'Noto Serif TC',serif;}
+
+  /* ---------- section spacing rhythm ---------- */
+  .post + .post{ margin-top:0; }
+
+  /* ---------- footer ---------- */
+  .closing{
+    max-width:38rem;
+    margin:5rem auto 0;
+    text-align:center;
+  }
+  .closing .divider{
+    width:44px; height:1px; background:var(--ink-faint);
+    margin:0 auto 2rem; opacity:0.6;
+  }
+  .closing p{
+    font-style:normal;
+    font-size:0.94rem;
+    color:var(--ink-faint);
+    line-height:1.9;
+  }
+
+  /* ---------- floating to-top button ---------- */
+  .to-top{
+    position:fixed;
+    right:1.8rem; bottom:1.8rem;
+    width:46px; height:46px;
+    border-radius:50%;
+    background:rgba(255,255,255,0.55);
+    backdrop-filter:blur(16px) saturate(140%);
+    border:1px solid var(--hairline);
+    box-shadow:0 12px 30px -14px rgba(46,44,39,0.35);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+    opacity:0; visibility:hidden;
+    transform:translateY(10px);
+    transition:opacity 0.35s, transform 0.35s, visibility 0.35s;
+    z-index:850;
+  }
+  .to-top.show{ opacity:1; visibility:visible; transform:translateY(0); }
+  .to-top:hover{ background:rgba(255,255,255,0.8); }
+  .to-top svg{ width:16px; height:16px; stroke:var(--ink); }
+
+  ::selection{ background:rgba(124,143,160,0.25); }
+
+  a:focus-visible, button:focus-visible{
+    outline:2px solid var(--accent-deep);
+    outline-offset:3px;
+  }
+</style>
+</head>
+<body>
+
+<div class="light-orb a"></div>
+<div class="light-orb b"></div>
+<svg class="washi-grain" aria-hidden="true">
+  <filter id="grain">
+    <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="11" stitchTiles="stitch"></feTurbulence>
+    <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.9 0"></feColorMatrix>
+  </filter>
+  <rect width="100%" height="100%" filter="url(#grain)"></rect>
+</svg>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="mini-nav" id="miniNav">
+  <span class="brand">潮汐指標　操作手冊</span>
+  <a class="toc-link" href="#toc">目錄</a>
+</div>
+
+<div class="wrap">
+
+  <header class="hero">
+    <span class="eyebrow">Trading System Notes</span>
+    <h1>潮 汐 指 標</h1>
+    <p class="subtitle">交易系統秘笈 — 操作手冊（更新版）</p>
+    <div class="divider"></div>
+    <p class="lead">
+      這份文件整理自「潮汐指標」App 裡實際跑的規則、分數門檻與設計由來，是自己設計的系統說明書，不是外部市面上的建議。這次更新加入了個股籌碼寫入D1資料庫與連續天數計算、大盤法人流向近5日累計顯示、掃描頁「波段絕佳點」戰術套餐（黃金雙引擎／回測週MA有守）、日線與週線圖表新增的手動畫線工具（趨勢線／水平線，自動延伸貼合K棒），以及魚寶AI升級為VIP專屬功能（快捷提問改下拉選單、系統SOP內建），同時把系統設定總表更新到目前實際生效的預設值。文中數字都是系統目前的預設值，之後參數若調整，會回來更新。
+    </p>
+  </header>
+
+  <nav class="toc" id="toc">
+    <div class="toc-title">目錄　Contents</div>
+    <ul class="toc-list">
+      <li><a href="#sec-1"><span class="toc-num">一</span>核心心法</a></li>
+      <li><a href="#sec-2"><span class="toc-num">二</span>長線選股訣竅（週均線）</a></li>
+      <li><a href="#sec-3"><span class="toc-num">三</span>短線選股訣竅（VCP點火）</a></li>
+      <li><a href="#sec-4"><span class="toc-num">四</span>日線多空箭頭標記系統</a></li>
+      <li><a href="#sec-5"><span class="toc-num">五</span>週線買賣點：兩個修正</a></li>
+      <li><a href="#sec-6"><span class="toc-num">六</span>系統設定總表</a></li>
+      <li><a href="#sec-7"><span class="toc-num">七</span>ETF 排除規則</a></li>
+      <li><a href="#sec-8"><span class="toc-num">八</span>魚小韭探險：密碼保護</a></li>
+      <li><a href="#sec-9"><span class="toc-num">九</span>魚池巡檢通知修正</a></li>
+      <li><a href="#sec-10"><span class="toc-num">十</span>紀律模擬規則</a></li>
+      <li><a href="#sec-11"><span class="toc-num">十一</span>大盤燈號與風力指數</a></li>
+      <li><a href="#sec-12"><span class="toc-num">十二</span>附錄：快速查表</a></li>
+      <li><a href="#sec-13"><span class="toc-num">十三</span>快速試算：停損與風險計算</a></li>
+      <li><a href="#sec-14"><span class="toc-num">十四</span>產業資金熱力圖</a></li>
+      <li><a href="#sec-15"><span class="toc-num">十五</span>外資連續天數追蹤與避險判斷</a></li>
+      <li><a href="#sec-16"><span class="toc-num">十六</span>交易日誌與儀表板資訊重整</a></li>
+      <li><a href="#sec-17"><span class="toc-num">十七</span>魚小韭候選排序優化與V轉急漲開關</a></li>
+      <li><a href="#sec-18"><span class="toc-num">十八</span>布林通道壓縮後準備爆量：新選股方法</a></li>
+      <li><a href="#sec-19"><span class="toc-num">十九</span>掃描頁與 SECRET-KEY 全面改版</a></li>
+      <li><a href="#sec-20"><span class="toc-num">二十</span>大盤燈號說明強化與日線趨勢圖優化</a></li>
+      <li><a href="#sec-21"><span class="toc-num">二一</span>魚小韭與 SECRET-KEY 開盤跳空濾網一致化（bug修正）</a></li>
+      <li><a href="#sec-22"><span class="toc-num">二二</span>個股籌碼寫入 D1 與大盤法人連續天數顯示</a></li>
+      <li><a href="#sec-23"><span class="toc-num">二三</span>掃描頁新增「波段絕佳點」戰術套餐</a></li>
+      <li><a href="#sec-24"><span class="toc-num">二四</span>手動畫線工具：趨勢線／水平線</a></li>
+      <li><a href="#sec-25"><span class="toc-num">二五</span>魚寶 AI 升級為 VIP 專屬功能</a></li>
+    </ul>
+  </nav>
+
+  <!-- ===================== 一 ===================== -->
+  <article class="post" id="sec-1">
+    <h2><span class="bar"></span>一、核心心法</h2>
+    <div class="teaser">
+      <p>固定在週末做研究，週一盤後根據系統訊號決策，平常不因為盤中價格跳動而臨時起意進出場。整個系統的底層心法只有三件事：不盯盤、大賺小賠、規則先行。</p>
+    </div>
+    <div class="post-full">
+      <h3>1.1　不盯盤</h3>
+      <p>固定在週末做研究，週一盤後根據系統訊號決策，平常不因為盤中價格跳動而臨時起意進出場。</p>
+      <h3>1.2　大賺小賠</h3>
+      <ul>
+        <li>虧損要快、快、快，獲利要讓子彈飛。</li>
+        <li>短線設定「停損 7%、停利 15%」的不對稱比例；</li>
+        <li>長線用「跌破週均線」或依設定的出場邏輯，</li>
+        <li>讓獲利部位盡量奔跑、不設死的停利上限。</li>
+      </ul>
+      <h3>1.3　規則先行，不靠感覺</h3>
+      <p>所有進出場條件都是量化規則觸發，不是盤中看感覺決定，每一次交易都可以被複盤、被驗證。</p>
+    </div>
+    <button class="read-more" data-target="sec-1"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 二 ===================== -->
+  <article class="post" id="sec-2">
+    <span class="post-tag">本次更新重點</span>
+    <h2><span class="bar"></span>二、長線選股訣竅（週均線 方法論）</h2>
+    <div class="teaser">
+      <p>系統對每檔股票的「長線體質」會算出一個 0～10 分的分數，8/10 以上換算成百分比正好是 80% 以上，這個分數在「魚小韭探險」的高分候選建議、掃描頁的個股卡片上都看得到。</p>
+    </div>
+    <div class="post-full">
+      <h3>2.1　10 分制怎麼疊出來的</h3>
+      <div class="table-wrap">
+        <table class="clean">
+          <thead><tr><th>項目</th><th>條件</th><th class="num">配分</th></tr></thead>
+          <tbody>
+            <tr><td>核心買進條件 isBuy</td><td>收盤站上週均線 ＋ 本週量能達近5週均量1.5倍以上 ＋（盤整區帶量突破 或 本週剛重新站上週均線）</td><td class="num">5分</td></tr>
+            <tr><td>剛轉強 justTurning</td><td>本週剛站上週均線（上週還在均線下方）＋ 本週量能達近10週均量1.3倍以上</td><td class="num">2分</td></tr>
+            <tr><td>相對強勢 isStrong</td><td>60日相對強度贏大盤指數5個百分點以上</td><td class="num">2分</td></tr>
+            <tr><td>流動性 liquidityOk</td><td>成交量／流動性達到篩選門檻</td><td class="num">1分</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>2.2　核心 5 分怎麼判斷</h3>
+      <ul>
+        <li>收盤價站上週均線（用收盤價判斷，不是整根週K棒都要在均線上）。</li>
+        <li>本週成交量要達到近5週均量的1.5倍以上。</li>
+        <li>盤整突破 或 剛重新站上均線，兩者擇一。</li>
+      </ul>
+
+      <h3>2.3　W 型態、爆量：肉眼輔助驗證的 3 條件</h3>
+      <ul>
+        <li>① 站上週均線：整根週K棒（含最低價）都要在均線之上，比10分制核心條件更嚴格。</li>
+        <li>② W型態完成：近20週內找兩個相近低點（誤差5%以內），右邊低點不能比左邊更低，收盤價突破頸線才算完成。</li>
+        <li>③ 底部爆量：本週量能超過近20週均量1.5倍，且收盤價貼近近20週低點（15%以內）。</li>
+      </ul>
+
+      <h3>2.4　訣竅：怎麼找到這種股票</h3>
+      <ul>
+        <li>魚小韭探險頁的「高分候選建議」→「長線體質分數 Top5」。</li>
+        <li>掃描頁「鯨魚雷達」用「🌱 底部起漲（週線）」篩選 chip。</li>
+      </ul>
+      <div class="callout">
+        <span class="callout-label">內部代號備忘</span>
+        <p>這個核心條件在程式碼裡的內部代號叫 isLongTermBuy。</p>
+      </div>
+    </div>
+    <button class="read-more" data-target="sec-2"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 三 ===================== -->
+  <article class="post" id="sec-3">
+    <span class="post-tag">本次更新重點</span>
+    <h2><span class="bar"></span>三、短線選股訣竅（VCP 點火引擎）</h2>
+    <div class="teaser">
+      <p>短線用「VCP點火引擎」，滿分4分，score ≥ 3分才算過關（VCP_PASS_SCORE=3），跟長線10分制是完全不同的引擎，各自獨立計算。</p>
+    </div>
+    <div class="post-full">
+      <h3>3.1　4 分制怎麼疊出來的</h3>
+      <div class="table-wrap">
+        <table class="clean">
+          <thead><tr><th>項目</th><th>條件</th><th class="num">配分</th></tr></thead>
+          <tbody>
+            <tr><td>近10日新高</td><td>收盤價突破「今天以外」近10天的最高價</td><td class="num">1分</td></tr>
+            <tr><td>布林上軌突破</td><td>收盤價突破20日布林通道上軌</td><td class="num">1分</td></tr>
+            <tr><td>放量</td><td>成交量＞近50日均量1.5倍，或單日漲幅≥9%，或漲幅≥6%且收在當日高點附近</td><td class="num">1分</td></tr>
+            <tr><td>動能交叉</td><td>MACD黃金交叉，或KD在30以下低檔區黃金交叉</td><td class="num">1分</td></tr>
+            <tr><td>穩步推升</td><td>額外加分項，封頂4分</td><td class="num">+2分</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>3.2　一票否決濾網</h3>
+      <ul>
+        <li>均線未達多頭保護門檻：收盤價沒有同時站上日20MA和日100MA。</li>
+        <li>乖離過大：股價偏離日20MA超過25%，且偏離日10MA超過15%。</li>
+        <li>日20MA還在下彎：不是真的止跌，容易搶反彈被壓回。</li>
+      </ul>
+
+      <h3>3.3　三種買點型態</h3>
+      <p>★這次更新：可以在設定裡分別關掉。</p>
+      <ul>
+        <li>🏆 標準點火：4個計分條件都符合，均線多頭保護到位，最典型的「噴出」訊號。需要實際帶量突破確認，永遠保留，不可關閉。</li>
+        <li>🚩 高檔旗型突破買：近3天窄幅盤整後，帶量突破這3天的高點。同樣需要實際帶量突破，永遠保留。</li>
+        <li>🧲 拉回量縮買：均線多頭排列，股價回測均線附近且量縮——不要求真正帶量突破一段區間高點，容易在盤整還沒真正確認突破前就先進場，經實測發現容易很快被停損。</li>
+        <li>🚀 動能推升買：沿均線推升，不需爆量——跟拉回買同樣的弱點。</li>
+      </ul>
+      <div class="callout">
+        <span class="callout-label">設定路徑</span>
+        <p>設定 → 日線圖買賣訊號設定 →「停用『拉回買』『動能買』進場訊號」。<b>2026-07-26 起改成預設開啟</b>（原本預設關閉、保留全部4種買點，後來想法反過來——拉回買／動能買不要求真正帶量突破，比較容易很快被停損，改成預設只留標準點火跟旗型突破買這兩種需要實際帶量突破確認的進場方式）。要用全部4種買點的話，要自己去設定頁關掉這個開關。</p>
+      </div>
+    </div>
+    <button class="read-more" data-target="sec-3"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 四 ===================== -->
+  <article class="post" id="sec-4">
+    <span class="post-tag">本次新增功能</span>
+    <h2><span class="bar"></span>四、日線圖多空箭頭標記系統</h2>
+    <div class="teaser">
+      <p>日線圖上除了 VCP 模擬進出場（圓點，次要參考），還有一組獨立的「多空條件」箭頭標記系統（主要買賣依據），4個多方條件＋4個空方條件，任一方向的條件數達到門檻就畫箭頭。</p>
+    </div>
+    <div class="post-full">
+      <h3>4.1　4 個多方＋4 個空方條件</h3>
+      <div class="table-wrap">
+        <table class="clean">
+          <thead><tr><th>多方條件</th><th>說明</th></tr></thead>
+          <tbody>
+            <tr><td>強勢噴出</td><td>過去5天內有2根K線的高點／低點都比前根高，且當天收紅K</td></tr>
+            <tr><td>跳空走高</td><td>開盤跳空2.5%以上，且當天最低點在開盤價之上</td></tr>
+            <tr><td>強勢排行</td><td>長中短線（5/20/60日）漲幅排名都是正的，且當天漲幅≥2%</td></tr>
+            <tr><td>趨勢強多</td><td>日10/20/50/100MA由上而下排列，且當天漲幅≥2%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>空方4個條件是完全鏡射版本（弱勢續跌／跳空走低／弱勢排行／趨勢強空），邏輯相反、門檻相同。</p>
+
+      <h3>4.2　箭頭標記規則</h3>
+      <div class="callout">
+        <span class="callout-label">重要：只標「新出現」那一天</span>
+        <p>只在訊號「新出現」的那一天畫記（前一天不成立、今天才成立才畫），同一波訊號延續中不會重複畫，避免圖表被同一波訊號洗成滿版。文字精簡成「第一個觸發條件＋其餘幾項」（例如「💪強勢噴出+2」代表還有另外2個條件也符合）。</p>
+      </div>
+
+      <h3>4.3　三個嚴格度濾網</h3>
+      <p>路徑：設定 → 日線圖買賣訊號設定</p>
+      <div class="table-wrap">
+        <table class="clean">
+          <thead><tr><th>濾網</th><th>說明</th><th class="num">目前預設</th></tr></thead>
+          <tbody>
+            <tr><td>至少2個條件同時成立才標記</td><td>單一條件不算數，多重驗證比較可信</td><td class="num">開</td></tr>
+            <tr><td>多方訊號需要VCP評分也達標</td><td>多方箭頭還要當天VCP評分同時≥3/4分才算數，只影響多方，空方沒有對應的VCP版本</td><td class="num">開</td></tr>
+            <tr><td>順著大盤方向做，逆風不標記</td><td>大盤綠燈（偏空）時不標記多方箭頭，紅燈（偏多）時不標記空方箭頭</td><td class="num">開</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>「順著大盤方向做」是用加權指數自己的價格對自己的MA20/MA100回推「過去每一天」的燈號狀態算出來的，往回可以看好幾年，不是只存最近3個月的資料。</p>
+
+      <h3>4.4　模擬出場方式</h3>
+      <p>路徑：設定 → 日線圖買賣訊號設定</p>
+      <div class="table-wrap">
+        <table class="clean">
+          <thead><tr><th>模式</th><th>規則</th><th class="num">目前預設</th></tr></thead>
+          <tbody>
+            <tr><td>均線防守</td><td>獲利&lt;3%守日20MA，獲利&gt;3%切換到更敏感的日10MA；跌破防守線要連續破線滿「寬容期天數」（可調0/1/2天，預設2天）才真的出場；還是保留10%硬停損當最後防線</td><td class="num">★目前使用</td></tr>
+            <tr><td>創高後連跌2天</td><td>不管有沒有跌破均線，創這筆交易進場以來的收盤新高後，只要連續2天收黑（今天收盤比昨天低）就出場；一樣保留10%硬停損</td><td class="num">可切換</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <span class="callout-label">已修正的舊 bug</span>
+        <p>均線防守的防守線之前疊加了「昨天低點」讓防守線過緊，正常量縮的小黑K會被誤判出場，已修正為單純用均線本身當防守線。</p>
+      </div>
+      <div class="callout">
+        <span class="callout-label">2026-07-21 再次調整</span>
+        <p>極限硬停損從10%再收緊回6.5%；動態收緊防守線的觸發門檻，也從獲利&gt;3%就切換，放寬到獲利&gt;5%才切換到更敏感的日10MA。這兩個參數屬於會隨盤感持續微調的部分，目前生效的是這次的數字，不是前一版手冊寫的10%/3%。</p>
+      </div>
+
+      <h3>4.5　收盤價交叉KAMA、容許底部V轉急漲（新增）</h3>
+      <div class="callout">
+        <span class="callout-label">已修正：KAMA金叉／死叉改用收盤價</span>
+        <p>這是第5個獨立測試中的多空條件，原本拿「日10MA」去跟KAMA比交叉，股價急漲噴出時KAMA會瞬間飆高，反應較慢的10MA還沒跟上就會被KAMA從下方「超越」，系統誤判成「10MA跌破KAMA」印出KAMA死叉的空方警告——其實只是急漲噴出，不是真的轉空。現在改成直接拿收盤價本身跟KAMA比較，收盤價才是即時反應當天股價、真正該跟「自適應均線」比較的對象。</p>
+      </div>
+      <div class="callout">
+        <span class="callout-label">新增：容許底部V轉急漲（高風險，預設關閉）</span>
+        <p>路徑：設定 → 日線圖買賣訊號設定。VCP的一票否決條件裡，「日20MA還在下彎」跟「乖離過熱(&gt;15%)」平常會擋掉大部分底部急漲股，但也會錯過像爆量直接V轉的強勢股（例如底部一根爆量長紅直接噴出）。開啟這個開關後，只要當天出現漲停或≥6%且收在當日高點附近的強勢噴出，就會豁免這兩條否決條件。這等同於「左側摸底」與「追高」，勝率會明顯低於標準的右側突破，也容易買在下跌趨勢中的死貓反彈——畫面上會有紅色警告框，開啟前務必自行縮小試單部位。</p>
+      </div>
+    </div>
+    <button class="read-more" data-target="sec-4"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 五 ===================== -->
+  <article class="post" id="sec-5">
+    <span class="post-tag">本次更新重點</span>
+    <h2><span class="bar"></span>五、週線買賣點：這次修正的兩個 bug</h2>
+    <div class="teaser">
+      <p>週線「買」訊號有三條路徑：① 站上均線、② 爆量確認、③ 盤整突破。這次把兩個藏在細節裡的漏洞補起來，讓三條路徑的判斷標準真正一致。</p>
+    </div>
+    <div class="post-full">
+      <h3>5.1　盤整突破買點漏了均線斜率濾網（已修正）</h3>
+      <div class="callout">
+        <span class="callout-label">已修正</span>
+        <p>①②都有檢查均線斜率（週均線要走平或翻揚，不能明顯下彎），但③盤整突破這條路徑原本完全沒有這個檢查——代表只要局部出現一個小型盤整框被判定「突破」，就算大趨勢的週均線明顯還在下彎，也會照樣觸發買點。現在三條路徑標準一致了，均線明顯下彎中，一律不給買點。</p>
+      </div>
+
+      <h3>5.2　拉回找買點：新增「還困在未突破盤整框」濾網（已修正）</h3>
+      <div class="callout">
+        <span class="callout-label">已修正</span>
+        <p>「拉回找買點」原本只看健康拉回（5～20%）＋量縮兩個條件，沒有檢查目前是不是還卡在一個「還沒突破」的盤整箱型裡——這種訊號很容易買在箱型中段，隨後被巴到箱型下緣出場。現在加了跟主要買訊一樣的「是否還困在未突破盤整框」檢查，只有已經跌出觀察範圍、或已經帶量突破箱型的拉回，才算數。</p>
+      </div>
+
+      <h3>5.3　盤整振幅門檻：內部下限鎖在 25%</h3>
+      <div class="callout">
+        <span class="callout-label">介面對齊</span>
+        <p>盤整框判定邏輯裡本來就有「不管設定值多小，實際運算下限一律鎖在25%」的保護，但設定頁面之前顯示的預設值是1，兩者對不上會誤導人。現在設定頁預設值跟輸入欄位最小值都改成25，跟實際生效的下限一致。</p>
+      </div>
+
+      <h3>5.4　量能判定改為「5週均量1.5倍＋預估全週量」（2026-07-21）</h3>
+      <div class="callout">
+        <span class="callout-label">已調整</span>
+        <p>週線爆量確認原本是跟「近13週(不含本週)最高量」比較，現在改成：拿最近5週均量當基準，本週還沒收完時，用「今天是星期幾」把已成交的量能按比例推算成全週量，再跟5週均量的1.5倍比較。這套邏輯統一套用在盤整突破、週線主買點、觀測槽門檻、鯨魚甦醒掃描這四個地方，不會再有「有的地方比13週新高、有的地方比5週均量」各算各的情況。</p>
+      </div>
+
+      <h3>5.5　W底判定收緊＋新增M頭防禦網（2026-07-21）</h3>
+      <div class="callout">
+        <span class="callout-label">已收緊：W底(雙重底)</span>
+        <p>之前的W底判定時間跨度太短，容易把短線震盪誤判成大底。現在要求：①左右兩底時間間隔至少8週以上，確保是真正的波段大底；②左右兩底之間必須出現過頸線反彈，最高價要比左底最低價高10%以上，證明中間有一次像樣的多頭抵抗；③右底不能深度破底，最低要&gt;=左底的0.95倍。週線圖上的「W」標記也從「只顯示最近一個」改成整段歷史都會標，但同一段大底區間標記過一次後，接下來15週內不會重複標記，避免同一個底部被切成好幾個小W。</p>
+      </div>
+      <div class="callout">
+        <span class="callout-label">新增：M頭防禦網</span>
+        <p>做多策略新增一個絕對否決條件：偵測到高檔M頭（兩個高點打平或略降、中間頸線被跌破）時，不管其他多方條件多滿足，一律不做多，防止在高檔反轉的起點追多買進。判斷邏輯跟W底互為鏡像。</p>
+      </div>
+    </div>
+    <button class="read-more" data-target="sec-5"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 六 ===================== -->
+  <article class="post" id="sec-6">
+    <span class="post-tag">本次更新重點</span>
+    <h2><span class="bar"></span>六、系統設定總表（目前最終版預設值）</h2>
+    <div class="teaser">
+      <p>把長線波段設定與日線圖買賣訊號設定裡的所有預設值，整理成一張速查表，方便對照目前系統實際生效的參數。</p>
+    </div>
+    <div class="post-full">
+      <div class="table-wrap">
+        <table class="clean">
+          <thead><tr><th>設定項目</th><th class="num">目前預設值</th><th>位置</th></tr></thead>
+          <tbody>
+            <tr><td>盤整振幅門檻</td><td class="num">30%（2026-07-26調整，欄位最小值鎖在30）</td><td>長線波段設定</td></tr>
+            <tr><td>爆量倍數</td><td class="num">1.5</td><td>長線波段設定</td></tr>
+            <tr><td>盤整突破停利</td><td class="num">20%（2026-07-26由3%調整）</td><td>長線波段設定</td></tr>
+            <tr><td>週線出場策略</td><td class="num">改守前週低點(trailing，2026-07-26由純均線防守調整)</td><td>長線波段設定</td></tr>
+            <tr><td>至少2個條件同時成立才標記</td><td class="num">開</td><td>日線圖買賣訊號設定</td></tr>
+            <tr><td>多方訊號需要VCP評分也達標</td><td class="num">開</td><td>日線圖買賣訊號設定</td></tr>
+            <tr><td>順著大盤方向做，逆風不標記</td><td class="num">開</td><td>日線圖買賣訊號設定</td></tr>
+            <tr><td>模擬出場方式</td><td class="num">創高後連跌2天出場(peakdown2，2026-07-26由均線防守調整)</td><td>日線圖買賣訊號設定</td></tr>
+            <tr><td>模擬出場寬容期</td><td class="num">2天</td><td>日線圖買賣訊號設定</td></tr>
+            <tr><td>停用拉回買／動能買</td><td class="num">開（2026-07-26由關調整，只保留標準點火跟旗型突破買）</td><td>日線圖買賣訊號設定</td></tr>
+            <tr><td>KAMA趨勢乾淨度濾網</td><td class="num">開</td><td>日線圖買賣訊號設定</td></tr>
+            <tr><td>極限硬停損</td><td class="num">6.5%（2026-07-21收緊）</td><td>VCP模擬引擎</td></tr>
+            <tr><td>動態防守觸發門檻</td><td class="num">獲利&gt;5%（2026-07-21調整）</td><td>VCP模擬引擎</td></tr>
+            <tr><td>容許底部V轉急漲</td><td class="num">開（2026-07-26由關調整）</td><td>日線圖買賣訊號設定</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <span class="callout-label">操作提醒</span>
+        <p>兩個設定頁都加了「還原預設」按鈕，點下去只重置畫面顯示，要再按「套用並關閉」才會真的存檔生效。</p>
+      </div>
+    </div>
+    <button class="read-more" data-target="sec-6"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 七 ===================== -->
+  <article class="post" id="sec-7">
+    <span class="post-tag">本次更新重點</span>
+    <h2><span class="bar"></span>七、ETF 排除規則：從寫死清單改成規則判斷</h2>
+    <div class="teaser">
+      <p>原本排除ETF用的是一份手動維護的固定代碼清單，新掛牌的ETF（例如00947）沒有手動加進去就會漏網。現在全部統一改成規則判斷。</p>
+    </div>
+    <div class="post-full">
+      <p>台股ETF代碼一律「00」開頭，不用再手動維護清單。這個修正同步套用在以下幾個地方：</p>
+      <ul>
+        <li>魚小韭探險的高分候選建議候選池</li>
+        <li>掃描頁全市場動態掃描的候選名單</li>
+        <li>Cloudflare Worker端每日17:30自動快照寫入D1的候選名單</li>
+        <li>掃描頁「排除空方警惕股」濾網用到的候選池篩選邏輯</li>
+      </ul>
+    </div>
+    <button class="read-more" data-target="sec-7"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 八 ===================== -->
+  <article class="post" id="sec-8">
+    <h2><span class="bar"></span>八、魚小韭探險：密碼保護</h2>
+    <div class="teaser">
+      <p>魚小韭探險頁面現在需要密碼才能查看／操作，密碼比對在 Cloudflare Worker 端進行，前端不會看到密碼明文。</p>
+    </div>
+    <div class="post-full">
+      <div class="callout">
+        <span class="callout-label">安全機制</span>
+        <p>密碼比對在Cloudflare Worker端進行（env.xiaojiu_password這個機密），前端不會看到密碼明文。解鎖狀態存在瀏覽器sessionStorage，只在當次瀏覽有效，關掉分頁或換裝置要重新輸入。</p>
+      </div>
+      <p>持股卡片（換標的／加碼減碼／加入魚池那排按鈕）中間新增了「加入觀察槽」按鈕，可以直接把手上的部位也丟進潛在觀測槽追蹤。高分候選建議清單每一列也有蛋型小按鈕，可以把候選股直接送進觀測槽，晚上看好但還沒買的可以先觀察。</p>
+    </div>
+    <button class="read-more" data-target="sec-8"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 九 ===================== -->
+  <article class="post" id="sec-9">
+    <h2><span class="bar"></span>九、魚池巡檢通知：修正只查日線漏掉週線的 bug</h2>
+    <div class="teaser">
+      <p>潛在觀測槽本來就可以切「日線」跟「週線（長線）」兩種模式看進場條件，但背景巡檢通知的檢查邏輯之前只查日線那一套條件。</p>
+    </div>
+    <div class="post-full">
+      <div class="callout">
+        <span class="callout-label">已修正</span>
+        <p>週線的3項條件完全沒被檢查到——導致頁面上明明顯示「波段條件已滿足3/3」的長線股票，卻不會出現在巡檢通報裡。現在巡檢會同時檢查日線跟週線兩套條件，哪一種先達成就先通報，並標明是哪一種。</p>
+      </div>
+    </div>
+    <button class="read-more" data-target="sec-9"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 十 ===================== -->
+  <article class="post" id="sec-10">
+    <h2><span class="bar"></span>十、魚小韭探險：紀律模擬規則</h2>
+    <div class="teaser">
+      <p>固定5檔位子（長線3＋短線2），資金依分數比例分配，不是均分。純規則計算，不是AI在決定買賣。</p>
+    </div>
+    <div class="post-full">
+      <ul>
+        <li>固定5檔位子（長線3＋短線2），資金依分數比例分配，不是均分。</li>
+        <li>5檔滿了不會主動換股，要等某一檔觸發停損／停利空出位子，隔天掃描才會補新的候選股進來。</li>
+        <li>「換標的」功能：點下去會列出目前候選池排名最前面的候選股清單，自己挑要換哪一檔，不是系統自動決定。</li>
+        <li>候選池會自動排除：目前已持有的、出現空方警訊的、超過價格上限的，以及所有ETF（00開頭代碼）。</li>
+        <li>純規則計算，不是AI在決定買賣——所有的候選排序、停損停利判斷都是量化規則算出來的。</li>
+      </ul>
+    </div>
+    <button class="read-more" data-target="sec-10"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 十一 ===================== -->
+  <article class="post" id="sec-11">
+    <h2><span class="bar"></span>十一、大盤燈號與風力指數：設計由來</h2>
+    <div class="teaser">
+      <p>風力指數抓的是「美股對台股的短線衝擊」，不是長線趨勢，跟大盤燈號分開看。</p>
+    </div>
+    <div class="post-full">
+      <h3>11.1　風力指數公式</h3>
+      <p>公式：VIX（40%）＋ SOX費半（25%）＋ NDX那斯達克（15%）＋ SPX標普（10%）＋ 美元兌台幣匯率（10%），只算風險上升方向，每個指標先轉Z-Score再合併，急跌加權，VIX絕對值濾網封頂，最後對近5天做EMA平滑。</p>
+
+      <h3>11.2　亞股輔助指標：跟風力分數是兩套獨立系統</h3>
+      <p>「08:00亞股產業連動確認」看的是日經225、KOSPI「當下」跟NDX、SOX的實際漲跌比較，跟風力分數計算方式、更新時間都不同，兩者可能不同步，這是正常的，不是bug。</p>
+      <div class="callout">
+        <span class="callout-label">已修正</span>
+        <p>抓Yahoo Finance資料時用meta.chartPreviousClose算漲跌幅，這個欄位在range=5d時其實是「5天區間開始前一天」的收盤價，不是「最近一個交易日」的收盤價，遇到指數本身最近幾天有明顯漲跌時會算出離譜的百分比。已經修正成直接看每日收盤價序列自己算前一天收盤，這個修正對VIX/SPX/NDX/SOX/日經/KOSPI全部共用，不只是亞股卡片。</p>
+      </div>
+
+      <h3>11.3　強勢線（EMA55）：自製指標</h3>
+      <div class="callout">
+        <span class="callout-label">設計說明</span>
+        <p>日線圖上新增一條強勢線（介於MA20跟MA100之間，用EMA55），是照自己邏輯設計的中期趨勢線，不是任何看盤軟體的公式，站上這條線代表中期趨勢偏強。</p>
+      </div>
+    </div>
+    <button class="read-more" data-target="sec-11"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 十二 ===================== -->
+  <article class="post" id="sec-12">
+    <h2><span class="bar"></span>十二、附錄：快速查表</h2>
+    <div class="teaser">
+      <p>把長線10分制、短線4分制的門檻意義，以及掃描頁的戰術組合，整理成三張速查表。</p>
+    </div>
+    <div class="post-full">
+      <h3>12.1　長線10分制門檻速查</h3>
+      <div class="table-wrap">
+        <table class="clean">
+          <thead><tr><th class="num">分數</th><th>意義</th></tr></thead>
+          <tbody>
+            <tr><td class="num">10分</td><td>核心＋剛轉強＋相對強勢＋流動性，四項全中，非常少見</td></tr>
+            <tr><td class="num">8～9分（80%以上）</td><td>核心條件到位，再加上至少1～2項加分，體質扎實</td></tr>
+            <tr><td class="num">5～7分</td><td>核心條件到位，力道還在累積</td></tr>
+            <tr><td class="num">0分</td><td>核心條件未到位，不建議進場</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>12.2　短線4分制門檻速查</h3>
+      <div class="table-wrap">
+        <table class="clean">
+          <thead><tr><th class="num">分數</th><th>意義</th></tr></thead>
+          <tbody>
+            <tr><td class="num">4分（封頂）</td><td>穩步推升加成，動能最強</td></tr>
+            <tr><td class="num">3分</td><td>點火訊號達標，符合放量或穩步推升即可進場</td></tr>
+            <tr><td class="num">3分但沒放量</td><td>缺乏放量確認，建議先觀察</td></tr>
+            <tr><td class="num">2分</td><td>觀察名單，均線有保護但點火訊號還沒集滿</td></tr>
+            <tr><td class="num">0～1分或被一票否決</td><td>不建議進場</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>12.3　掃描頁戰術組合速查</h3>
+      <div class="table-wrap">
+        <table class="clean">
+          <thead><tr><th>目標</th><th>主濾網</th><th>不要選</th><th>疊加濾網</th><th>排序邏輯</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>明天可能起漲（短線）</td>
+              <td>🌱 醞釀待發</td>
+              <td>🔥強勢噴出／💥極限噴出</td>
+              <td>🏦 法人買超＋成交量&gt;5日均量</td>
+              <td>成交量優先，長線強度次要</td>
+            </tr>
+            <tr>
+              <td>最近會起漲（波段）</td>
+              <td>🌱 底部起漲（週線）</td>
+              <td>🚀多頭延續</td>
+              <td>🏦 法人買超</td>
+              <td>長線強度優先</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <button class="read-more" data-target="sec-12"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 十三 ===================== -->
+  <article class="post" id="sec-13">
+    <span class="post-tag">本次更新重點</span>
+    <h2><span class="bar"></span>十三、快速試算：停損與風險計算（這次修正）</h2>
+    <div class="teaser">
+      <p>「快速試算」用來抓進場前的停損價與安全股數，這次把停損退回機制、三段停損比較、單筆虧損上限、以及含手續費／證交稅的真實虧損試算都重新整理。</p>
+    </div>
+    <div class="post-full">
+      <h3>13.1　四個主要停損候選，取最緊的一個</h3>
+      <p>停損價優先從「本週K最低點／本日K最低點／前一根週K收盤價／前一根日K收盤價」四個候選裡，挑離現價最近（最高）的一個，也就是最緊、風險最小的停損。</p>
+      <div class="callout">
+        <span class="callout-label">設計由來</span>
+        <p>舊版本一律用週均線當停損參考，股價噴出、乖離拉大時週均線會離現價非常遠，算出來的「每股風險」大到不合理，反推的安全股數就會小到離譜（例如5000元本金只買得起3股）。改成四選一取最緊之後，安全股數更貼近「萬一真的拉回，最快會在哪裡出場」的實際情況。</p>
+      </div>
+
+      <h3>13.2　退回機制再修正（2026-07-19）</h3>
+      <div class="callout">
+        <span class="callout-label">已修正</span>
+        <p>四個主要候選有可能同時失效（今天走勢比較特殊，本週／本日K棒的低點跟收盤價恰好都比現價高），這時候舊版直接退回用「週均線」，但週均線乖離過大時一樣會算出離譜數字——合晶（6182）就是實例：週均線離現價49.8%，退回後每股風險高達74元，10000元本金只算得出20股。現在退回機制改成從「週均線／日20MA／前一根週K低點」三者中一樣挑最緊的一個，不再直接預設用週均線。</p>
+      </div>
+
+      <h3>13.3　三段停損比較：停損最大／適中／最小</h3>
+      <p>用「週均線／日20MA／前一根週K低點」三個候選價位，各自跟現價比出損失百分比，由大到小排序，分別標成「停損最大」「停損適中」「停損最小」，畫面上不顯示個別均線的名稱，方便直接挑一種當自己的操作紀律。沒有輸入本金時一樣會顯示這個比較，只是沒有股數／金額可算。</p>
+
+      <h3>13.4　單筆最高承受虧損本金上限 15%</h3>
+      <p>風險滑桿範圍從原本的 0.5%～5% 拉高到 0.5%～15%。安全股數＝「風險預算（本金 × 風險%）÷ 每股風險（用13.1／13.2算出的停損價）」跟「本金 ÷ 現價」兩者取較小值，確保買得起、也賠得起。</p>
+
+      <h3>13.5　收據式費用試算（含手續費與證交稅）</h3>
+      <div class="table-wrap">
+        <table class="clean">
+          <thead><tr><th>項目</th><th>公式</th><th class="num">稅率</th></tr></thead>
+          <tbody>
+            <tr><td>手續費（買）</td><td>成交買進金額 × 稅率</td><td class="num">0.1425%</td></tr>
+            <tr><td>手續費（賣）</td><td>成交賣出金額 × 稅率</td><td class="num">0.1425%</td></tr>
+            <tr><td>證交稅</td><td>成交賣出金額 × 稅率（只有賣出時收取）</td><td class="num">0.3%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>賣出價金用「停損適中」那個候選價位試算，扣掉賣出手續費與證交稅後，跟含手續費的買進總成本相減，得到「真實最大概賠」，比單純「股數 × 每股風險」更貼近真的出場時會扣掉的錢。</p>
+      <div class="callout">
+        <span class="callout-label">數字校正</span>
+        <p>證交稅稅率是 0.3%，不是跟手續費一樣的 0.1425%——ETF 是 0.1%，現股當沖是 0.15%，都跟一般股票的 0.3% 不同，試算裡固定用一般股票稅率。</p>
+      </div>
+
+      <h3>13.6　潛在觀測槽：長線（週）三項條件的實際門檻</h3>
+      <p>畫面上為了不讓人一眼反推規則，已經把括號裡的門檻數字拿掉，這裡記錄實際數字，自己對照用：</p>
+      <ul>
+        <li>週線站上週均線（趨勢翻多）</li>
+        <li>乖離未過度擴張，乖離 ≤ 25%</li>
+        <li>週量能創近13週新高</li>
+      </ul>
+      <p>三項全數達成才會顯示「波段條件已滿足」。</p>
+    </div>
+    <button class="read-more" data-target="sec-13"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 十四 ===================== -->
+  <article class="post" id="sec-14">
+    <span class="post-tag">本次新增功能</span>
+    <h2><span class="bar"></span>十四、產業資金熱力圖</h2>
+    <div class="teaser">
+      <p>儀表板新增產業資金熱力圖，用色塊大小＋深淺呈現「今天資金往哪個產業集中、漲跌幅如何」。這個功能上線後資料來源換了三次，最後定案在最穩定的一版。</p>
+    </div>
+    <div class="post-full">
+      <h3>14.1　資料來源的三次演進</h3>
+      <div class="callout">
+        <span class="callout-label">最終版：D1快照比對漲跌幅</span>
+        <p>第一版拿「漲跌幅×成交金額」概算資金流向；第二版嘗試接三大法人真實買賣超（T86_ALL／TPEx bargin_unit），但這兩支官方API不穩定（T86_ALL回傳格式不對，TPEx整批擋掉datacenter流量），改版失敗。最後定案：直接讀自己D1資料庫裡每天17:30 cron存的收盤快照（成交量≥1,000張、約450檔個股），比對最近兩個交易日的收盤價算漲跌幅，不用再即時打任何外部API，速度快也不會再被官方API擋。</p>
+      </div>
+      <h3>14.2　顯示規則</h3>
+      <p>顯示「成交規模最大」的前10個產業（按產業成交金額排序），圖塊大小＝產業總市值，顏色深淺＝漲跌幅（紅＝上漲／綠＝下跌）。每天17:30收盤後才更新，盤中看到的是前一個交易日的資料，這是正常現象，不是沒更新到。</p>
+      <div class="callout">
+        <span class="callout-label">銀行金融獨立分類</span>
+        <p>官方產業別代碼17「金融保險」把銀行、保險、證券全部混在一起，看不出銀行股單獨的表現。現在把14檔標準金控股（華南金2880、富邦金2881、國泰金2882、凱基金2883、玉山金2884、元大金2885、兆豐金2886、台新金2887、新光金2888、國票金2889、永豐金2890、中信金2891、第一金2892、合庫金5880）獨立標成「銀行金融」，不再落到廣義的「金融保險」。</p>
+      </div>
+    </div>
+    <button class="read-more" data-target="sec-14"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 十五 ===================== -->
+  <article class="post" id="sec-15">
+    <span class="post-tag">本次新增功能</span>
+    <h2><span class="bar"></span>十五、外資連續天數追蹤與避險判斷</h2>
+    <div class="teaser">
+      <p>原本「外資買賣超」只看單日快照，看不出是不是連續好幾天都在賣。新增連續天數追蹤後，串接進三個既有的避險判斷裡。</p>
+    </div>
+    <div class="post-full">
+      <h3>15.1　資料怎麼存</h3>
+      <p>每天17:30那次cron順便多存一筆大盤三大法人（外資／投信／自營）買賣超彙總金額到KV裡，滾動保留最近30個交易日。之後讀這份歷史，算出「連續買超/賣超幾天」＋「近5日/近10日累計金額」。</p>
+      <h3>15.2　串接進三個地方</h3>
+      <div class="table-wrap">
+        <table class="clean">
+          <thead><tr><th>位置</th><th>原本</th><th>現在</th></tr></thead>
+          <tbody>
+            <tr><td>儀表板加權指數卡</td><td>只顯示「外資 +500億」單日數字</td><td>連續2天以上會多顯示「連續買超/賣超X天」</td></tr>
+            <tr><td>戰術策略卡：避險輪動</td><td>只看昨天資金流出電子股＋美股電子股收跌</td><td>加一個OR條件：外資連續賣超≥3天也算觸發</td></tr>
+            <tr><td>戰術策略卡：風力避險鎖</td><td>只看風力≥5.1</td><td>加一個OR條件：外資連續賣超≥3天也算觸發</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout">
+        <span class="callout-label">刻意沒做的事</span>
+        <p>這三個整合都只影響「顯示的警示文案」，沒有接到魚小韭實際的自動填單/擋單邏輯——那邊目前還是只看風力≥5.1。用籌碼面連續天數自動改變下單行為是更高風險層級的事，先不自動串，要做的話另外再討論。</p>
+      </div>
+    </div>
+    <button class="read-more" data-target="sec-15"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 十六 ===================== -->
+  <article class="post" id="sec-16">
+    <span class="post-tag">本次新增功能</span>
+    <h2><span class="bar"></span>十六、交易日誌與儀表板資訊重整</h2>
+    <div class="teaser">
+      <p>魚小韭新增「交易日誌」功能，可以把每天的候選股快照存下來，累積成可以回頭分析的紀錄；儀表板/持倉魚池/潛在觀測槽/魚小韭也統一整理成單一「資訊重整」按鈕。</p>
+    </div>
+    <div class="post-full">
+      <h3>16.1　交易日誌：存今日快照</h3>
+      <p>魚小韭頁面新增「存今日快照」與「查看累積紀錄」兩顆按鈕。按下「存今日快照」會把當天的長線候選、短線候選、噴出觀察、被明確理由否決的股票整理成資料，存進D1資料庫的`journal_snapshot`表格（同一天重複存會覆蓋，不會疊加重複），也會跳出文字框方便複製備份。「查看累積紀錄」則是把D1裡存過的所有紀錄整份撈出來。</p>
+      <div class="callout">
+        <span class="callout-label">自動保留1年</span>
+        <p>每天17:30 cron會順便清掉超過365天以前的舊紀錄，資料庫大小自動維持在「最近一年」的量，不會無限往上疊加。</p>
+      </div>
+      <h3>16.2　資訊重整按鈕</h3>
+      <p>儀表板、持倉魚池、潛在觀測槽、魚小韭都統一加上橘黃色的「資訊重整」按鈕，取代原本各處說法不一的「重新整理」「數據重整」等用詞。這幾顆按鈕點下去除了重畫畫面，還會先清掉相關股票在快取裡的舊資料再強制重抓，確保按下去是真的有更新到，不是重畫同一份舊資料。</p>
+    </div>
+    <button class="read-more" data-target="sec-16"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 十七 ===================== -->
+  <article class="post" id="sec-17">
+    <span class="post-tag">本次新增功能</span>
+    <h2><span class="bar"></span>十七、魚小韭候選排序優化與V轉急漲開關</h2>
+    <div class="teaser">
+      <p>候選股排序多了一層「動能甜蜜帶」，另外新增一個顯示動能過熱股票的觀察區塊，讓「噴出的股票沒被選進去」這件事看得到，也解釋得清楚。</p>
+    </div>
+    <div class="post-full">
+      <h3>17.1　動能甜蜜帶排序</h3>
+      <p>動能&gt;80的硬門檻沒有變（避免4939亞電那種急漲後又急跌的教訓），但候選股排序多了一層：動能落在40~70這個「甜蜜帶」（已經確認在動、但還沒逼近過熱天花板）的，會排在甜蜜帶外的候選股前面，取代原本「動能分數愈高排愈前面」的單純排序。</p>
+      <h3>17.2　今日噴出觀察</h3>
+      <p>魚小韭頁面新增「🔥今日噴出觀察」區塊，列出動能&gt;80、被過熱門檻排除的股票（純顯示排名+動能分數），清楚標註「純觀察不進魚小韭」——不會出現在短線Top5，也不會被自動補位或換標的選單挑到，單純讓你看得到今天誰在噴。</p>
+      <h3>17.3　容許底部V轉急漲（詳見第4.5節）</h3>
+      <p>這個開關會影響魚小韭候選股的篩選結果（透過VCP評分的一票否決豁免），完整說明見第四章第4.5節。</p>
+    </div>
+    <button class="read-more" data-target="sec-17"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 十八 ===================== -->
+  <article class="post" id="sec-18">
+    <span class="post-tag">本次新增功能</span>
+    <h2><span class="bar"></span>十八、布林通道壓縮後準備爆量：新選股方法（2026-07-26）</h2>
+    <div class="teaser">
+      <p>正式把「布林通道壓縮（能量收斂）後帶量突破」納入系統重要選股方法之一，獨立於VCP點火引擎跟長線10分制之外的第三套訊號系統，掃描篩選、掃描卡片、個股圖表、魚小韭跟SECRET-KEY都以此為優先考量。</p>
+    </div>
+    <div class="post-full">
+      <h3>18.1　核心邏輯：帶寬與壓縮判定</h3>
+      <p>布林通道帶寬＝(上軌－下軌)／中軌(＝日20MA)。往前檢查連續交易日，只要帶寬「小於近20期均寬的一半」或「接近近10期最低值」，就算當天處於壓縮狀態；往前數到第一個不再壓縮的日子為止，得到「壓縮天數」。</p>
+      <h3>18.2　爆量突破確認條件</h3>
+      <p>同時符合以下三項，才判定為「有效爆量發動」：</p>
+      <ul>
+        <li>突破前連續壓縮天數 ≥ 3天。</li>
+        <li>今日收盤價突破布林上軌。</li>
+        <li>今日成交量 ≥ 前5個交易日均量的1.5倍（不含當天自己，避免爆量的當天拉高分母）。</li>
+      </ul>
+      <h3>18.3　在系統中的呈現位置</h3>
+      <ul>
+        <li><b>掃描篩選面板</b>：獨立放在整個「策略篩選」卡片最前排，金色邊框跟其他篩選chip區隔（💥 布林壓縮爆量股），一鍵勾選即可篩出。</li>
+        <li><b>掃描結果卡</b>：符合條件的標的會在標籤列最前面顯示金色「💥 布林壓縮爆量」pill，並附上「壓縮N天後爆量．量能X.X倍」的細節。</li>
+        <li><b>個股圖表</b>：K線型態列表裡也會顯示同樣的壓縮天數與量能倍數說明。</li>
+      </ul>
+      <div class="callout">
+        <span class="callout-label">優先順序</span>
+        <p>魚小韭的長線／短線候選排序，跟SECRET-KEY的長線／短線挑選，都把「布林壓縮爆量」排在最優先（比原本的🧲拉回量縮／🚩旗型突破這些黃金標籤還前面）。短線候選資格條件也把它納入其中一項（原本只看醞釀待發／強勢噴出／極限噴出）。</p>
+      </div>
+    </div>
+    <button class="read-more" data-target="sec-18"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 十九 ===================== -->
+  <article class="post" id="sec-19">
+    <span class="post-tag">本次新增功能</span>
+    <h2><span class="bar"></span>十九、掃描頁與 SECRET-KEY 全面改版（2026-07-26）</h2>
+    <div class="teaser">
+      <p>掃描頁的掃描範圍卡片跟漲跌排行重新設計版面；SECRET-KEY從儀表板裡的手風琴，改成有返回鍵的獨立全螢幕頁面，並換上深色保險庫主題。</p>
+    </div>
+    <div class="post-full">
+      <h3>19.1　掃描頁版面重新設計</h3>
+      <p>「掃描範圍」卡片改成白卡＋黑色選中膠囊樣式（我的自選股／鯨魚雷達二選一），「啟動雷達掃描」改成黑底圓角大按鈕，掃描中的動畫沒有變。「本次掃描漲跌排行」改名「今日結果．鯨魚雷達」，從分頁切換（漲幅／跌幅分頁）改成永久並排的左右兩欄同時顯示，簡化成排名＋代號名稱＋漲跌幅，整列可點擊開新分頁看新聞。</p>
+      <h3>19.2　策略篩選／成交量過濾改成可收合</h3>
+      <p>掃描頁的「策略篩選」跟「成交量過濾」兩張卡片都改成一鍵收合手風琴，預設收起來，需要調整篩選條件時再點開；策略篩選卡的「N組件已選」提示留在收合列上，收起來也看得到目前選了幾項。</p>
+      <h3>19.3　SECRET-KEY：獨立全螢幕頁面＋深色保險庫主題</h3>
+      <p>原本是儀表板裡的手風琴模組，改成點進去是完整全螢幕頁面（不再是「畫面中的畫面」），左上角有返回鍵可以回到儀表板。整個介面換成深色保險庫風格：深藍背景、金屬感「SECRET KEY」標籤、發光魚圖示、珍珠白候選卡、深色任務追蹤卡。</p>
+      <h3>19.4　用詞調整：不寫「買進」</h3>
+      <p>SECRET-KEY裡涉及進場動作的文字，全部改成不寫「買進」，改用「加入筆記紀錄」的練習說法——例如原本「明天09:00開盤市價買進」，改成「明天09:00開盤，可加入筆記紀錄(市價)練習」；「買進日」標籤也改成「紀錄日」。</p>
+    </div>
+    <button class="read-more" data-target="sec-19"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 二十 ===================== -->
+  <article class="post" id="sec-20">
+    <span class="post-tag">本次新增功能</span>
+    <h2><span class="bar"></span>二十、大盤燈號說明強化與日線趨勢圖優化（2026-07-26）</h2>
+    <div class="teaser">
+      <p>大盤燈號的「多頭拉回」跟「空頭反彈」補上白話比喻說明；儀表板的加權指數日線趨勢圖新增MA20/MA100數字、最後營業日OHLC，以及MA20/MA100之間的半透明橘色區間填色。</p>
+    </div>
+    <div class="post-full">
+      <h3>20.1　大盤燈號四象限說明</h3>
+      <table class="clean">
+        <thead><tr><th>燈號</th><th>白話比喻</th></tr></thead>
+        <tbody>
+          <tr><td>🔴 多頭(全面順風)</td><td>——</td></tr>
+          <tr><td>🟠 多頭拉回(拉回休息)</td><td>多頭格局中的「回檔」或「洗盤」。好比走在向上的山路中，暫時往下走一小段坡，但整座山的趨勢還是往上的。</td></tr>
+          <tr><td>🟡 空頭反彈</td><td>空頭格局中的「反彈」或「逃命波」。好比走在向下的階梯中，突然往上跳高了一階，但大方向依然是往樓梯底走。</td></tr>
+          <tr><td>🟢 空頭(全面逆風)</td><td>——</td></tr>
+        </tbody>
+      </table>
+      <h3>20.2　日線趨勢圖新增資訊</h3>
+      <p>儀表板的「日線趨勢．日MA／100MA」卡片，圖例旁直接顯示日MA(20)跟日100MA目前的數字（原本只有色塊圖例，沒有數字）；圖表下方新增一行，顯示最後一個營業日的日期＋開／高／低／收。</p>
+      <h3>20.3　MA20/MA100 區間半透明橘色填色</h3>
+      <p>MA20跟MA100之間疊了一層半透明橘色，顏色是 <code>rgba(255,165,0,0.25)</code>（橘色25%透明度），視覺上一眼就能看出兩條均線的乖離區間；想要更淡的話可以改成0.15。</p>
+    </div>
+    <button class="read-more" data-target="sec-20"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 二一 ===================== -->
+  <article class="post" id="sec-21">
+    <span class="post-tag">本次更新重點</span>
+    <h2><span class="bar"></span>二一、魚小韭與 SECRET-KEY 開盤跳空濾網一致化（bug修正，2026-07-26）</h2>
+    <div class="teaser">
+      <p>發現魚小韭「今日決策」已經因為開盤跳空放棄的股票，SECRET-KEY卻還是照樣推薦——根本原因是兩邊原本各自獨立，跳空濾網只存在於魚小韭的執行流程裡，SECRET-KEY從沒套用過。</p>
+    </div>
+    <div class="post-full">
+      <h3>21.1　問題現象</h3>
+      <p>魚小韭「今日決策」顯示：「3652精聯 今日開盤跳空+6.9%(&gt;2%門檻)，依紀律放棄追高進場，改看下一檔候選」，但同一天打開SECRET-KEY，候選名單裡卻還是列出3652精聯（長線候選，週線條件觸發）。</p>
+      <h3>21.2　根本原因</h3>
+      <p>魚小韭在實際建倉／補位執行的當下，會另外抓一次即時報價，檢查「今天開盤價比昨收跳空上漲&gt;2.0%」，符合就當日放棄進場、改看下一名候選——這道濾網只寫在魚小韭自己的執行流程裡，SECRET-KEY的選股邏輯從頭到尾沒有套用過同一道濾網，才會出現兩邊看到的候選名單不一致。</p>
+      <h3>21.3　修正方式</h3>
+      <p>SECRET-KEY選股流程新增同一套跳空濾網：抓每檔候選的開盤價／昨收，跳空幅度&gt;2%的直接跳過、依序往下一名候選遞補，直到湊滿數量或候選用完為止；跳過時會有提示訊息告訴你是哪一檔被跳過、跳空多少。跟魚小韭用完全相同的規則跟2%門檻，兩邊看到的候選名單從此會一致。</p>
+    </div>
+    <button class="read-more" data-target="sec-21"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 二二 ===================== -->
+  <article class="post" id="sec-22">
+    <span class="post-tag">本次新增功能</span>
+    <h2><span class="bar"></span>二二、個股籌碼寫入 D1 與大盤法人連續天數顯示（2026-08-01）</h2>
+    <div class="teaser">
+      <p>原本連續天數追蹤只做到大盤層級（見第15章）。這次補上個股層級的籌碼寫入與連續天數計算，並在儀表板的大盤法人卡片上，把「近5日累計」也顯示出來，不再只看單日跟連續天數。</p>
+    </div>
+    <div class="post-full">
+      <h3>22.1　個股籌碼寫入 D1（updateDailyChips）</h3>
+      <p>後端新增 <code>updateDailyChips(env, date, stock_id, foreign_buy, trust_buy, margin_change)</code>：查詢該檔股票日期較早的最新一筆紀錄，取得「昨天」的外資／投信／融資連續天數，依同一套規則各自獨立算出「今天」的連續天數（正數＝連續增加天數，負數＝連續減少天數，0＝平盤或無方向），再用 <code>INSERT ... ON CONFLICT(date, stock_id) DO UPDATE</code> 寫回 D1 的 <code>daily_chips</code> 資料表（date+stock_id為主鍵）。</p>
+      <h3>22.2　批次寫入 API：POST /api/tw/update_chips</h3>
+      <p>新增登入保護的批次端點，body帶 <code>{ token, chips: [{date, stock_id, foreign_buy, trust_buy, margin_change}, ...] }</code>。每檔股票的「昨天基準」查詢無法互相取代（各自不同stock_id、不同日期），只能逐筆查，但把算好的寫入敘述先收集起來，最後統一交給 <code>env.DB.batch()</code> 每100筆分批送出，比逐筆立即寫入快。格式不對的單筆會被跳過，不會讓整批請求失敗，回傳時會告訴你成功寫入幾筆、跳過幾筆。</p>
+      <h3>22.3　大盤法人卡片新增「近5日累計」</h3>
+      <p>儀表板的「外資／投信／自營商」卡片（跟大盤加權指數卡放在一起），原本只顯示「連續買超/賣超X天」，現在外資、投信兩張卡片下方會多一行「近5日累計+XX億」（自營商不顯示，因為短線進出頻繁、累計金額參考意義較低）。資料來源沿用既有的 <code>/api/inst-flow-streak</code>，前端沒有多打任何新的外部請求。</p>
+      <div class="callout">
+        <span class="callout-label">注意</span>
+        <p>個股籌碼的連續天數目前只有「寫入」這一步做好，還沒有接到任何一個現有畫面上顯示——比較像是先把資料庫欄位跟計算邏輯備好，之後想在個股頁面顯示「這檔外資連續買超5天」之類的資訊時，直接查 <code>daily_chips</code> 就有現成的連續天數可以用，不用再自己重算一次。</p>
+      </div>
+    </div>
+    <button class="read-more" data-target="sec-22"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 二三 ===================== -->
+  <article class="post" id="sec-23">
+    <span class="post-tag">本次新增功能</span>
+    <h2><span class="bar"></span>二三、掃描頁新增「波段絕佳點」戰術套餐（2026-08-01）</h2>
+    <div class="teaser">
+      <p>把兩個波段最強的實戰條件——黃金雙引擎（右側突破）、回測週MA有守（左側安全進場）——合併成一顆一鍵戰術套餐，同時也保留兩個獨立的細項篩選，想單看哪一種都可以自己選。</p>
+    </div>
+    <div class="post-full">
+      <h3>23.1　兩個實戰條件是什麼</h3>
+      <div class="table-wrap">
+        <table class="clean">
+          <thead><tr><th>條件</th><th>判斷邏輯</th><th>實戰意義</th></tr></thead>
+          <tbody>
+            <tr><td>🏆 黃金雙引擎</td><td>本週帶量突破盤整區間（cb.breakout）＋上週收盤在週MA下、這週收盤站上週MA</td><td>型態突破與位階反轉同時發生，波段起漲最經典的訊號</td></tr>
+            <tr><td>🧲 回測週MA有守</td><td>已站上週MA＋乖離率(收盤價-週MA)/週MA介於0%~5%之間</td><td>股價在週MA附近整理有守，防守空間小，屬於左側安全進場</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>23.2　合併成單一套餐＋保留獨立細項篩選</h3>
+      <p>進階篩選的 WEEKLY 區塊新增兩顆獨立 filter-chip：「🏆 黃金雙引擎」「🧲 回測週MA有守」，可以只看其中一種。同時「一鍵戰術套餐」新增第4顆按鈕「💎 波段絕佳點」，套用的條件是「兩者符合其一即可（isDualEngine || isPullback）」。掃描結果卡片上，符合黃金雙引擎的會顯示「🏆 雙引擎」金色標籤，符合回測有守的會顯示「🧲 距週MA X.X%」標籤，兩者都符合會同時顯示兩個標籤。</p>
+      <h3>23.3　一鍵戰術套餐擴充為4顆＋新增「套餐說明」按鈕</h3>
+      <p>一鍵戰術套餐從3顆（爆發力／大跌用／順風局）擴充為4顆（2x2排列），套餐標題旁邊新增「套餐說明」按鈕，點開會列出四個套餐各自的適合情境、優點、缺點，方便挑選要用哪一顆。</p>
+    </div>
+    <button class="read-more" data-target="sec-23"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 二四 ===================== -->
+  <article class="post" id="sec-24">
+    <span class="post-tag">本次新增功能</span>
+    <h2><span class="bar"></span>二四、手動畫線工具：趨勢線／水平線（2026-08-01）</h2>
+    <div class="teaser">
+      <p>日線、週線圖表新增手動畫線功能，可以自己在K線圖上畫趨勢線跟水平線，畫好的線會依標的與日/週線分開存起來，切換標的或日週線分頁時自動重新載入，縮放拖曳圖表也不會跑位。</p>
+    </div>
+    <div class="post-full">
+      <h3>24.1　工具列位置與操作方式</h3>
+      <p>入口放在日線、週線各自的功能列（跟資訊重整、綜合洞察、BB同一排），按鈕寫「畫線工具」，點下去才會彈出畫線控制面板（趨勢線／水平線／刪除／5色選色／清除全部），不會一直佔用畫面空間。<b>每次「打開」面板都會強制重設成「刪除」模式</b>，避免只是想開面板看一下或刪一條線，卻不小心手滑在畫布上多畫出新的線；點面板外面或按右上角X會自動收起來。</p>
+      <h3>24.2　座標綁定原理：趨勢線自動延伸</h3>
+      <p>點擊圖表時，用圖表引擎的 <code>timeToCoordinate()</code>／<code>priceToCoordinate()</code> 把滑鼠的像素座標換算成「時間＋價格」存起來（不是存像素位置），畫出來時再用反函式換算回當下畫面的像素位置——所以不管怎麼縮放、拖曳、切換標的再切回來，線都會精準貼在原本的K棒時間/價格上。趨勢線畫完兩點後，系統會自動算出斜率，往左右兩側延伸畫到整個圖表邊界（跟一般看盤軟體的趨勢線一樣），不會卡在原本點的那兩點之間；點擊要刪除某條線時，判定範圍也是用延伸後的整條線來算，不是只有原本的線段。</p>
+      <h3>24.3　儲存方式</h3>
+      <p>用瀏覽器 <code>localStorage</code> 存，key是「目前股票代號＋日/週線」的組合，只存在這支裝置上，換裝置或清除瀏覽器資料不會保留。</p>
+    </div>
+    <button class="read-more" data-target="sec-24"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 二五 ===================== -->
+  <article class="post" id="sec-25">
+    <span class="post-tag">本次更新重點</span>
+    <h2><span class="bar"></span>二五、魚寶 AI 升級為 VIP 專屬功能（2026-08-01）</h2>
+    <div class="teaser">
+      <p>魚寶AI從一般功能升級成VIP密碼登入才能用，快捷提問從橫向按鈕改成下拉選單好挑選，系統提示詞內建了完整SOP指南跟強制術語字典。原本一併加上的Google聯網搜尋因為打到API配額上限，暫時關閉。</p>
+    </div>
+    <div class="post-full">
+      <h3>25.1　VIP 專屬與快捷提問改下拉選單</h3>
+      <p>後端聊天API新增VIP驗證：session存的值必須是「vip」（VIP密碼登入才會存這個值，一般通行碼登入存的是「1」）才放行，否則直接擋下並回覆需要VIP解鎖。前端快捷提問從一排橫向按鈕改成下拉選單，分成「大盤與籌碼」「持股與診斷」「系統操作與SOP指南」三個分類，選了會自動送出並跳回預設選項；新增了一題「健檢自選清單：有無走壞可刪除觀察的標的」。</p>
+      <h3>25.2　系統提示詞內建SOP＋強制術語字典</h3>
+      <p>魚寶的大腦提示詞新增「系統操作與SOP指南」段落，把長線波段SOP、短線動能SOP、黃金雙引擎、資金與心態控管都寫進去，使用者問「怎麼操作」時魚寶可以直接回答，不會提到「操作手冊」「說明書」等字眼、也不提供外部網址。原本就有的強制術語字典（買進→加入觀察、賣出→刪除觀察、停損→觸及最低下限等）維持不變。</p>
+      <h3>25.3　Google聯網搜尋：暫時關閉</h3>
+      <p>原本加上了 <code>tools:[&#123;googleSearch:&#123;&#125;&#125;]</code> 讓魚寶能查證最新新聞，但測試時很快打到Gemini API的配額上限（免費方案本身額度低，開了搜尋功能後更容易被打滿），改回沒有聯網搜尋的版本。程式碼保留成註解沒有刪掉，之後開通Gemini API付費方案、確認配額足夠後，把註解拿掉就能重新啟用，其餘程式碼都不用動。</p>
+      <div class="callout">
+        <span class="callout-label">目前狀態</span>
+        <p>魚寶現在會誠實告知「沒有即時聯網查證能力」，不會謊稱自己查過最新資料——這是拿掉搜尋功能的同時，一併調整了提示詞內容，避免魚寶自稱有它其實沒有的能力。</p>
+      </div>
+    </div>
+    <button class="read-more" data-target="sec-25"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <footer class="closing">
+    <div class="divider"></div>
+    <p>這份文件是自己留存用的操作手冊，數字全部來自「潮汐指標」App 目前的原始碼邏輯，日後系統規則如果調整，記得回來更新對應章節，避免筆記跟實際系統脫節。</p>
+  </footer>
+
+</div>
+
+<button class="to-top" id="toTop" aria-label="回到頂部">
+  <svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 19V5"></path>
+    <path d="M5 12l7-7 7 7"></path>
+  </svg>
+</button>
+
+<script>
+  // read more / collapse
+  document.querySelectorAll('.read-more').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.getAttribute('data-target');
+      const post = document.getElementById(id);
+      const full = post.querySelector('.post-full');
+      const teaser = post.querySelector('.teaser');
+      const label = btn.querySelector('.label');
+      const isOpen = full.classList.contains('open');
+      if(isOpen){
+        full.classList.remove('open');
+        teaser.style.display = '';
+        label.textContent = '繼續閱讀';
+        btn.classList.remove('expanded');
+        post.scrollIntoView({behavior:'smooth', block:'start'});
+      } else {
+        full.classList.add('open');
+        teaser.style.display = 'none';
+        label.textContent = '收合內容';
+        btn.classList.add('expanded');
+      }
+    });
+  });
+
+  // reading progress + mini nav + to-top
+  const progressBar = document.getElementById('progressBar');
+  const miniNav = document.getElementById('miniNav');
+  const toTop = document.getElementById('toTop');
+
+  function onScroll(){
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+    progressBar.style.width = pct + '%';
+
+    if(scrollTop > 260){
+      miniNav.classList.add('show');
+      toTop.classList.add('show');
+    } else {
+      miniNav.classList.remove('show');
+      toTop.classList.remove('show');
+    }
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  toTop.addEventListener('click', () => {
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+</script>
+
+</body>
+</html>
