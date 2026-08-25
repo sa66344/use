@@ -451,7 +451,7 @@
     <p class="subtitle">交易系統秘笈 — 操作手冊（更新版）</p>
     <div class="divider"></div>
     <p class="lead">
-      這份文件整理自「潮汐指標」App 裡實際跑的規則、分數門檻與設計由來，是自己設計的系統說明書，不是外部市面上的建議。這次更新加入了個股籌碼寫入D1資料庫與連續天數計算、大盤法人流向近5日累計顯示、掃描頁「波段絕佳點」戰術套餐（黃金雙引擎／回測週MA有守）、日線與週線圖表新增的手動畫線工具（趨勢線／水平線，自動延伸貼合K棒），以及魚寶AI升級為VIP專屬功能（快捷提問改下拉選單、系統SOP內建），同時把系統設定總表更新到目前實際生效的預設值。文中數字都是系統目前的預設值，之後參數若調整，會回來更新。
+      這份文件整理自「潮汐指標」App 裡實際跑的規則、分數門檻與設計由來，是自己設計的系統說明書，不是外部市面上的建議。這次更新一次補齊 08-02 之後累積的所有改動：魚小韭大盤層級濾網與新鮮點火硬性篩選、動能加速度取代絕對分數排序、除息軟性降權與處置股硬隔離的區分、Goose Yellow neo-brutalism 全面視覺改版（大盤總覽／自選股清單／五日分析／魚寶AI）、融資融券診斷工具、V2.0.1三層漏斗規格書的 Shadow Mode 導入、黃金觀測清單卡片版面重設計，一路到最新的V3動態大盤閘門（魚小韭攻擊／秘密便當保守分流）。文中數字都是系統目前的預設值，之後參數若調整，會回來更新。
     </p>
   </header>
 
@@ -486,22 +486,16 @@
       <li><a href="#sec-26"><span class="toc-num">二六</span>SECRET-KEY 淺色主題轉換＋雙檔同時追蹤（補記）</a></li>
       <li><a href="#sec-27"><span class="toc-num">二七</span>SECRET-KEY 全面改版：秘密愛心便當「晚安速報」</a></li>
       <li><a href="#sec-28"><span class="toc-num">二八</span>追蹤魚池重複建檔防護與登入頁提示調整</a></li>
-      <li><a href="#sec-29"><span class="toc-num">二九</span>五日分析全面改版：聯集清單與健康拉回分類</a></li>
-      <li><a href="#sec-30"><span class="toc-num">三十</span>秘密愛心便當／魚小韭「新鮮點火」篩選</a></li>
-      <li><a href="#sec-31"><span class="toc-num">三一</span>掃描快取分範圍存放與指南頁大改版</a></li>
-      <li><a href="#sec-32"><span class="toc-num">三二</span>選股邏輯真實數據校正（甜蜜點／大盤濾網／假日污染）</a></li>
-      <li><a href="#sec-33"><span class="toc-num">三三</span>儀表板與追蹤頁桌面版並排排版</a></li>
-      <li><a href="#sec-34"><span class="toc-num">三四</span>亞股產業連動確認卡片改版</a></li>
-      <li><a href="#sec-35"><span class="toc-num">三五</span>戰術策略卡版面演進：分卡到合併</a></li>
-      <li><a href="#sec-36"><span class="toc-num">三六</span>WIND SCORE 語意修正與五段式文案</a></li>
-      <li><a href="#sec-37"><span class="toc-num">三七</span>秘密愛心便當搬家與動態金句</a></li>
-      <li><a href="#sec-38"><span class="toc-num">三八</span>TAIEX／融資融券／盤後速報樣式統一</a></li>
-      <li><a href="#sec-39"><span class="toc-num">三九</span>追蹤頁美股風向與亞股連動真實資料改版</a></li>
-      <li><a href="#sec-40"><span class="toc-num">四十</span>假日防呆：週末不計算快照</a></li>
-      <li><a href="#sec-41"><span class="toc-num">四一</span>五日分析自動篩選、置頂與盤中記錄警示</a></li>
-      <li><a href="#sec-42"><span class="toc-num">四二</span>追蹤頁紅漲綠跌統一與產業熱力圖明細</a></li>
-      <li><a href="#sec-43"><span class="toc-num">四三</span>掃描頁範圍切換 bug 修正</a></li>
-      <li><a href="#sec-44"><span class="toc-num">四四</span>戰術策略卡文案去重複</a></li>
+      <li><a href="#sec-29"><span class="toc-num">二九</span>大盤層級濾網與新鮮點火硬性篩選</a></li>
+      <li><a href="#sec-30"><span class="toc-num">三十</span>動能加速度：從絕對分數到排序依據</a></li>
+      <li><a href="#sec-31"><span class="toc-num">三一</span>回測週MA有守優先於爆發力</a></li>
+      <li><a href="#sec-32"><span class="toc-num">三二</span>Goose Yellow 風格改版起步</a></li>
+      <li><a href="#sec-33"><span class="toc-num">三三</span>大盤總覽與自選股清單 Neo-brutalism 全面改版</a></li>
+      <li><a href="#sec-34"><span class="toc-num">三四</span>融資融券診斷工具與盤後速報可點擊</a></li>
+      <li><a href="#sec-35"><span class="toc-num">三五</span>五日分析與魚寶AI視覺改版</a></li>
+      <li><a href="#sec-36"><span class="toc-num">三六</span>V2.0.1三層漏斗規格書：Shadow Mode 導入</a></li>
+      <li><a href="#sec-37"><span class="toc-num">三七</span>黃金觀測清單卡片版面重設計</a></li>
+      <li><a href="#sec-38"><span class="toc-num">三八</span>V3動態大盤閘門：魚小韭攻擊／秘密便當保守分流</a></li>
     </ul>
   </nav>
 
@@ -1344,147 +1338,154 @@
     <button class="read-more" data-target="sec-28"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
   </article>
 
-    <!-- ===================== 二九 ===================== -->
+  <!-- ===================== 二九 ===================== -->
   <article class="post" id="sec-29">
-    <span class="post-tag">本次重大改版</span>
-    <h2><span class="bar"></span>二九、五日分析全面改版：聯集清單與健康拉回分類（2026-08-08）</h2>
+    <span class="post-tag">重大改版</span>
+    <h2><span class="bar"></span>二九、大盤層級濾網與新鮮點火硬性篩選（2026-08-08）</h2>
     <div class="teaser">
-      <p>原本叫「中控台」，核心訴求是右側確認再進場、不接刀。這次改成自選股∪魚小韭已持有∪魚小韭候選榜Top5的聯集，新增四時段快照、雙層清除機制，並疊加一層獨立的「健康拉回」分類，不動核心否決判斷本身。</p>
+      <p>魚小韭候選生成邏輯以前完全沒看大盤狀態，回測發現崩跌期短線候選命中率明顯偏低。這次加了兩道硬性濾網：大盤偏多才給短線候選，且只挑「今天才第一次點火」的新鮮標的，已經噴了好幾天的老候選不再列入。</p>
     </div>
     <div class="post-full">
-      <h3>29.1　聯集名單：<code>buildControlMasterList()</code></h3>
-      <p>每次呼叫都即時讀取當下真實狀態：自選股全部分頁的股票（不是只看目前停在哪一頁）、魚小韭已持有部位、魚小韭候選榜前5名，合併去重成一份清單。每檔標的帶 <code>xiaojiuPriority</code>（0一般／1候選／2已持有）排序，已持有優先顯示在最前面。因為是每次呼叫都重新讀取，只要股票從任何來源被移除，下次呼叫這份清單就會自動消失，不需要另外清理。</p>
-      <h3>29.2　四時段快照</h3>
-      <p>盤中提供四個建議時段的手動觸發按鈕：09:10開盤試探／11:00中段穩定度／12:30尾盤收尾／13:00最後確認。各按一次就會強制抓取「自選股∪魚小韭持股∪觀測槽」的盤中即時報價，重算最新動能分數並歸檔進當天的紀錄軌跡。進頁面就會先顯示今天已經記錄過哪些時段，不用等掃描完才看得到。</p>
-      <h3>29.3　雙層清除機制</h3>
-      <p>①單檔手動清除：每張卡片右上角固定有一個✕，不管系統有沒有判定「致命」都可以隨時手動清掉，操作權交給使用者自己判斷。②一鍵大掃除：只清掉系統判定「長線保護傘破裂」（<code>purgeCheck.canPurge</code>）或「連續5天分數貼近0」的標的，不會不分青紅皂白整批清空。</p>
-      <h3>29.4　健康拉回獨立分類：<code>classifyControlHealthStatus()</code></h3>
-      <p>核心觀察：漲多後正常拉回也會被 <code>vetoed</code>（常見於「日20MA連3天上揚」這條件被短暫打斷），跟「拉回找買點」的健康劇本長得幾乎一樣，差別在於能不能守住均線、量能有沒有異常。<code>vetoed</code> 本身仍然是「今天適不適合買」的判斷，繼續給掃描頁／候選名單／自選股🚨徽章共用，完全不動；這裡在五日分析頁面另外疊一層「健不健康」的分類，判準是：收盤仍站在日100MA之上（長線結構沒破）且拉回當天沒有爆量下殺（不是恐慌性倒貨），才算「健康拉回」（黃色「拉回觀察」），否則維持紅色「已被否決」的警示，只影響這一頁的顯示方式，不影響任何選股篩選邏輯本身。</p>
-      <div class="callout">
-        <span class="callout-label">跟第22章的關係</span>
-        <p>本章的動能分數計算仍然沿用既有的 <code>computeVCPScoreForControl()</code>（VCP評分），沒有另外發明新的評分系統；「健康拉回」只是在既有分數之上疊加的顯示分類。</p>
-      </div>
+      <h3>29.1　大盤層級濾網</h3>
+      <p>用她提供的17交易日資料回測：崩跌期短線候選命中率40.4%，反彈震盪期48.2%，差距明顯。沿用既有的大盤燈號全域狀態，綠燈／綠黃燈（確認空頭／空頭反彈）時，短線動能候選直接清空、不硬選；紅燈／紅黃燈（多頭格局）維持原樣。高風力防禦模式是另一套本來就保守的邏輯，不受這裡影響。</p>
+      <h3>29.2　新鮮點火硬性篩選</h3>
+      <p>魚小韭跟秘密愛心便當的候選來源共用同一套「今天型態符合＋動能≤80」判斷，這次同步加上新鮮點火硬性門檻：只挑「昨天不是候選、今天才第一次成為候選」的標的。快取還沒刷新過時（例如剛開App還沒掃描過）不過濾，維持原行為；一旦刷新過，寧可顯示「今天沒有符合的」也不退回舊邏輯偷偷選到追高風險股。</p>
+      <h3>29.3　同一輪的其他補強</h3>
+      <table class="clean">
+        <thead><tr><th>項目</th><th>內容</th></tr></thead>
+        <tbody>
+          <tr><td>worker.js 週末 guard</td><td>cron 排程跳過週六日，避免假日空跑</td></tr>
+          <tr><td>戰術情境擴充</td><td>新增「翻轉前 streak≥15 天信任反轉」與「美股跌+台股跌雙弱」兩個判斷</td></tr>
+          <tr><td>產業資金熱力圖</td><td>新增眾數比對主流龍頭＋debug端點，修正舊類股快取未過期的 bug</td></tr>
+          <tr><td>美股連動風力指數配色</td><td>2026-08-11：微風(平穩)級距的顏色從綠色改成藍色（<code>#0891b2</code>），因為系統裡綠色到處代表「跌／虧」，風力值跟股價漲跌是兩個獨立維度，用同一種顏色容易混淆</td></tr>
+        </tbody>
+      </table>
     </div>
     <button class="read-more" data-target="sec-29"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
   </article>
 
   <!-- ===================== 三十 ===================== -->
   <article class="post" id="sec-30">
-    <span class="post-tag">bug修正／體驗調整</span>
-    <h2><span class="bar"></span>三十、秘密愛心便當／魚小韭「新鮮點火」硬性篩選（2026-08-08）</h2>
+    <span class="post-tag">選股邏輯修正</span>
+    <h2><span class="bar"></span>三十、動能加速度：從絕對分數到排序依據（2026-08-11～08-12）</h2>
     <div class="teaser">
-      <p>發現便當推薦過的8檔全部收盤後被巴頭：原本選股只看「今天收盤瞬間符不符合型態」，沒檢查是不是安靜幾天後才第一次點火。改成硬性要求候選必須是「昨天還不是候選、今天才變成候選」，不是新鮮點火的一律排除。</p>
+      <p>用累積紀錄回測發現：momentumScore（動能絕對分數）越高，隔日報酬反而越差，跟原本的假設完全相反。改用「今天分數比昨天進步多少」（動能加速度）當排序依據，同時把除息防空窗期的判斷從硬性排除鬆綁成軟性降權。</p>
     </div>
     <div class="post-full">
-      <h3>30.1　根因：只看瞬間型態，沒看是否新鮮</h3>
-      <p><code>liteZenPickCandidates()</code> 原本的邏輯是每天收盤後重新掃描一次全市場，只要當下符合型態條件就會入選，完全不管這檔股票是不是已經噴了好幾天、訊號已經舊掉了才被選進來——這正是「已經漲一段才進場」的典型陷阱。</p>
-      <h3>30.2　修法：<code>getFreshIgnitionSymbols()</code></h3>
-      <p>新增一個跟既有「訊號降級警示」（第9章邏輯的延伸）反方向的比對：<code>getDemotedStocks()</code> 找「昨天是候選、今天不是了」的標的；<code>getFreshIgnitionSymbols()</code> 則反過來找「昨天不是候選、今天才變成候選」的標的，才算新鮮。<code>fetchFreshIgnitionSet()</code> 重用訊號降級警示既有的 D1 快照資料，不是另外開一條資料管線。</p>
-      <h3>30.3　硬性篩選，不湊數</h3>
-      <p><code>liteZenPickCandidates()</code> 跟 <code>getXiaojiuCandidatePools()</code>（魚小韭候選池）都新增 <code>freshSet</code> 參數，強制要求候選必須在這個集合裡；如果今天真的沒有新鮮點火的標的，便當寧可顯示「今天沒有符合的候選」，也不會拿舊訊號湊數。為了避免剛開 App 時集合還沒抓好造成空白，用模組級快取 <code>cachedFreshIgnitionSet</code> 搭配 <code>freshIgnitionCacheReady</code> 旗標處理載入時序。</p>
+      <h3>30.1　momentumScore 負相關的發現</h3>
+      <p>用魚小韭累積紀錄（2779筆，07-21～08-11）重跑系統自己的勝率報告邏輯驗證：排除已知崩盤日後，momentumScore 跟隔日報酬的相關係數是 -0.28（負相關且明顯），40～60分那組命中率只剩33.3%，反而是&lt;0分那組命中率最高（60.5%）。高分不代表「即將噴出」，更可能是「已經漲了一大段、動能打滿」，短線上離拉回反轉更近。</p>
+      <h3>30.2　動能加速度取代絕對分數排序</h3>
+      <p>momentumScore &gt;80 的過熱濾網（門檻用途）繼續保留，但把它從候選池排序的 tiebreaker 整個拔掉，改讓「動能加速度」（<code>scoreAccel</code>，今天分數減昨天分數，比較「進步多少」而非「絕對值多高」）提到 vcpScore 之前，成為比絕對分數更優先的排序依據。任一邊沒有昨天快照資料時 <code>scoreAccel</code> 維持 <code>null</code>、視為平手，自動退回用 vcpScore 排序，不會因缺資料出錯。</p>
+      <p>資料來源：重用 D1 快照（<code>/api/journal-snapshot</code>）當「昨天分數」，用模組級快取（<code>cachedYesterdayScores</code>）背景刷新、同步讀取，不用把候選池計算改成 async。</p>
+      <h3>30.3　除息防空窗期：從硬排除改軟性降權</h3>
+      <p>用同一批累積紀錄回測發現：除息防空窗期被否決的股票，後續「真的繼續跌」的命中率只有43.4%，接近丟硬幣，用「一定會跌」當理由直接排除證據不夠強，改成排序往後放的軟性懲罰（tiebreaker，放在 vcpScore 之後），不再直接踢出候選池。</p>
       <div class="callout">
-        <span class="callout-label">動態問候</span>
-        <p>順手把便當卡的問候語 <code>liteZenGreetingByTime()</code> 改成依時段動態變化：早安（05-11）／午安（11-18）／晚安（18-05），不再固定寫死一句。</p>
+        <span class="callout-label">處置股維持硬隔離，理由跟除息不同</span>
+        <p>處置股維持硬隔離不變——不是因為方向預測（數據其實顯示處置股反而常常是反彈），是因為處置股每5～20分鐘才撮合一次（分盤交易），成交量瞬間結冰，VCP評分依賴的量價關係在這種環境下完全失效，這是操作面的限制，不是方向性否決，跟除息的情況本質不同，不能套用同一套軟化邏輯。</p>
       </div>
+      <h3>30.4　巡檢提醒新增「今日還沒存快照」檢查</h3>
+      <p>只在收盤後（17點後）查，避免每天早上7點巡檢都誤報「今天還沒存」；查詢失敗時一律當作「已存」處理，不因網路問題誤報。</p>
     </div>
     <button class="read-more" data-target="sec-30"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
   </article>
 
   <!-- ===================== 三一 ===================== -->
   <article class="post" id="sec-31">
-    <span class="post-tag">本次更新重點</span>
-    <h2><span class="bar"></span>三一、掃描快取分範圍存放與指南頁大改版（2026-08-08）</h2>
+    <span class="post-tag">排序微調</span>
+    <h2><span class="bar"></span>三一、回測週MA有守優先於爆發力（2026-08-16）</h2>
     <div class="teaser">
-      <p>掃描頁自選股跟鯨魚雷達原本共用一個快取格子會互相覆蓋；指南頁面同一天內大改版：權限差異整章拿掉改用彈窗按鈕、章節重整、新手導覽從21步擴充到28步。</p>
+      <p>從便當紀錄累積觀察到（兩輪截圖共19筆手動核對）：標「🧲回測週MA有守」的勝率明顯比標「🔥爆發力」高。樣本還不夠大，先做輕度調整，不是整個拿掉爆發力。</p>
     </div>
     <div class="post-full">
-      <h3>31.1　掃描快取分 key：<code>trend_scan_cache_snapshot_${scanScope}</code></h3>
-      <p>原本自選股跟鯨魚雷達（master）掃描結果存在同一個localStorage格子，切換範圍會互相覆蓋，導致每次切換都要重新掃描。改成依 <code>scanScope</code>（<code>watchlist</code>／<code>master</code>）分開存成兩把獨立的 key，各自互不干擾。自選股範圍會先過濾成跟自選股／觀測槽相關的子集再存，縮小體積；鯨魚雷達範圍大（500檔上限），直接整批存。<code>persistScanCache()</code> 負責寫入、<code>restoreScanCacheIfFresh()</code> 負責當天內的還原，兩者都會先確認日期字串跟今天相符才採用（用台北時區的 <code>Intl.DateTimeFormat</code> 判斷，不是瀏覽器本地時區）。</p>
-      <h3>31.2　指南頁面改版</h3>
-      <p>「用戶權限差異」整章拿掉，改成一顆按鈕直接開啟既有的訪客權限彈窗（重用 <code>guest-quick-modal</code>），不用另外維護一份重複的表格內容；「潮汐誕生及特色」的開頭段落改成口述式的開發心路歷程，特色列表精簡成7點差異化重點；新手導覽從21步擴充到28步（新增五日分析／秘密愛心便當／訊號降級警示／魚小韭候選等7個新步驟，原本21步的文案沒有更動）；SOP新增「路線C：五日分析」的操作流程；使用建議新增「最佳使用順序」A到F段落。</p>
-      <div class="callout">
-        <span class="callout-label">文字風格清查</span>
-        <p>指南頁全站清查了所有破折號用法，共43處中32處是程式碼註解（不影響畫面），11處是使用者實際會看到的文字，這11處全部改掉，統一用更自然的中文標點。</p>
-      </div>
+      <h3>31.1　排序位置調整</h3>
+      <p>把「回測週MA有守」（<code>scanIsPerfectSwingMatch().isPullback</code>）插到「爆發力」（<code>isBbSqueezeBreakout</code>，布林壓縮爆量）前面，兩者都符合時優先選回測週MA有守；爆發力沒被拿掉，只是排序往後移一階。之後累積夠資料、便當紀錄的戰術標籤可以系統化分析時，再回頭決定要不要做更明確的調整。這批資料樣本還不夠大、也還沒有系統化存進可分析的CSV（目前只能靠她截圖人工數），撐不起「整個拿掉爆發力」這麼大的改動。</p>
+      <h3>31.2　誤殺修正：處置股否決理由</h3>
+      <p>同一輪也用累積紀錄分析發現處置股否決其實是誤殺（報酬其實是正的），修正了判斷理由的敘述，但如上一章所述，硬隔離本身仍維持不變（理由是交易機制失效，不是方向性判斷）。</p>
     </div>
     <button class="read-more" data-target="sec-31"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
   </article>
 
   <!-- ===================== 三二 ===================== -->
   <article class="post" id="sec-32">
-    <span class="post-tag">本次重大改版</span>
-    <h2><span class="bar"></span>三二、選股邏輯真實數據校正：甜蜜點／大盤濾網／假日污染（2026-08-08）</h2>
+    <span class="post-tag">視覺全面改版</span>
+    <h2><span class="bar"></span>三二、Goose Yellow 風格改版起步（2026-08-20）</h2>
     <div class="teaser">
-      <p>拿一份外部真實累積數據分析（377檔、2695筆快照，橫跨17個交易日）重新檢驗選股邏輯，做了三項修正，並且用同一批真實 CSV 重新驗證這些修法沒有被污染資料誤導。</p>
+      <p>App 開始從原本的玻璃擬態（glass-panel）風格，逐步轉換成「Goose Yellow」鵝黃底＋neo-brutalism（粗黑框＋硬陰影）新視覺語彙。這一輪先解決幾個排版 bug，並把 TAIEX 詳情頁、登入頁套上新語彙。</p>
     </div>
     <div class="post-full">
-      <h3>32.1　拔除「40-70甜蜜點」加分</h3>
-      <p>原本 <code>getXiaojiuCandidatePools()</code>／<code>liteZenPickCandidates()</code> 對 momentumScore（5日+20日+60日報酬率加總）落在40-70這個區間的標的會額外加分，理論依據是「不會太弱也不會太強，剛好起漲」。但實測發現這個區間的實際勝率反而是所有分數段裡最差的（14.3%），momentumScore 跟後續報酬甚至呈現負相關（r=-0.19）。修法：把「加分優先排」這個動作整個拔除，改成不特別偏好任何分數區間，範圍取保守解讀，沒有反向變成「分數越低越優先」。</p>
-      <h3>32.2　命中率報表：機制性／方向性否決分開統計</h3>
-      <p><code>computeXiaojiuWinRateReport()</code> 的 <code>byReason</code> 統計新增 <code>directional</code> 旗標（判斷依據是 <code>reason.startsWith("空方訊號")</code>），畫面上渲染成兩個獨立區塊：機制性否決（例如除息防空窗期）跟方向性否決（真的判斷錯方向）不再混在一起比命中率，避免技術性排除拉低了真正選股邏輯的命中率數字。</p>
-      <h3>32.3　大盤層級濾網</h3>
-      <p>發現崩跌期（40.4%命中率）跟反彈期（48.2%）的命中率差異很大，但候選生成邏輯完全沒有大盤濾網。因為候選判斷全部在前端算（不在 worker.js），直接沿用既有的 <code>marketLightCache.state</code> 大盤燈號：綠燈或綠黃燈（確認空頭或空頭反彈）時，<code>getXiaojiuCandidatePools()</code> 的短線候選跟 <code>liteZenPickCandidates()</code> 的非防禦模式候選池直接清空（新增 <code>marketConfirmedWeak</code> 旗標）；紅燈或紅黃燈維持原樣，高風力防禦路線不受影響。</p>
-      <h3>32.4　修復非交易日重複存快照的污染 bug</h3>
-      <p>查出之前「7/31跟8/1收盤價99%相同、8/7跟8/8收盤價93%相同」這種怪異現象的根因：<code>xiaojiu-export-snapshot-btn</code> 存檔時只用記憶體裡現有資料加上當天日期戳，完全沒有判斷今天是不是交易日——她在週六又按了一次存快照，把週五的舊資料蓋上週六的日期存進去，變成「隔了一天股價完全沒變」的假訊號，稀釋了命中率統計。修法：存檔前用 <code>Intl.DateTimeFormat</code> 判斷台北時間今天是不是週六／週日，是的話直接擋下並提示「今天是非交易日不用存」。</p>
-      <h3>32.5　交叉驗證：排除污染後結論依然成立</h3>
-      <p>排除週六污染的兩天後重新計算，短線候選命中率從44.8%回升到49.0%、長線候選從29.6%回升到38.1%，證實部分低勝率確實是資料污染造成、不是選股邏輯本身有問題；但「40-70甜蜜點最差」這個結論排除污染資料後依然成立（甚至更明顯，18.8% vs 其餘分數段39-53%），證明32.1跟32.3的修改不是被污染資料誤導出來的錯誤結論。另外測試了「新鮮點火」（見第30章）在整個候選池全量資料上的差異（新鮮48.1% vs 已經噴過47.0%），差異不明顯，但這是拿整個候選池測、不是拿便當/魚小韭實際篩選後的結果測，樣本不對等，屬於資料不足以下定論，如實保留這個限制。</p>
-      <div class="callout">
-        <span class="callout-label">刻意延後的項目</span>
-        <p>「潛在觀測槽」的觸發時機（<code>vcpIgnitionConfirmed</code>）本質上是「確認度已經累積過」的訊號，觸發時通常已經漲一段——這正是她問「能不能抓到起漲前」的真正答案所在，但這是高風險改動、目前樣本量還撐不起明確結論，先用虛擬筆記模擬3-4週驗證後再決定要不要調整，這次刻意沒有動。</p>
-      </div>
+      <h3>32.1　修正的排版 bug</h3>
+      <table class="clean">
+        <thead><tr><th>問題</th><th>修法</th></tr></thead>
+        <tbody>
+          <tr><td>盤後速報在窄容器裡用了寬螢幕斷點的三欄排版，畫面錯亂</td><td>改回 <code>space-y-2</code> 單欄</td></tr>
+          <tr><td>法人買超／賣超單行擠壓、換行難看</td><td><code>flex-wrap</code> 拿掉、字級縮小、加 truncate 策略</td></tr>
+          <tr><td>App 主要7個panel背景還是舊的不透明色，蓋住body鵝黃點點背景</td><td>逐一改成 transparent（<code>#panel-dashboard</code> 額外一條 <code>#FAFAFA</code> 規則也要處理）</td></tr>
+          <tr><td><code>main{background:transparent}</code> 沒生效</td><td>CSS specificity 問題：tag selector 輸給 class selector，需要加 <code>!important</code></td></tr>
+        </tbody>
+      </table>
+      <h3>32.2　新語彙初次套用</h3>
+      <p>TAIEX 詳情頁、登入頁率先套用 neo-brutalist 語彙（<code>rounded-card border-card shadow-hard</code>）。這是後續 08-22～08-23 大盤總覽全面改版的前奏。</p>
     </div>
     <button class="read-more" data-target="sec-32"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
   </article>
 
   <!-- ===================== 三三 ===================== -->
   <article class="post" id="sec-33">
-    <span class="post-tag">本次更新重點</span>
-    <h2><span class="bar"></span>三三、儀表板與追蹤頁桌面版並排排版（2026-08-08）</h2>
+    <span class="post-tag">重大改版</span>
+    <h2><span class="bar"></span>三三、大盤總覽與自選股清單 Neo-brutalism 全面改版（2026-08-21～08-23）</h2>
     <div class="teaser">
-      <p>桌面瀏覽器打開時，儀表板跟追蹤頁的部分卡片會自動並排成雙欄，手機版完全不受影響；純 CSS 實作，沒有動任何 JS 邏輯。</p>
+      <p>大盤總覽的 MARKET PULSE（美股連動widget）與產業熱力圖、自選股清單全面套用「反AI視覺規則」：粗黑框＋硬陰影＋高飽和色塊，取代原本的玻璃擬態卡片與連續透明度漸層。</p>
     </div>
     <div class="post-full">
-      <h3>33.1　純 CSS media query，不動手機版</h3>
-      <p>用 <code>@media (min-width:768px)</code> 把儀表板／追蹤頁的直接子元素從 <code>display:block</code> 改成 <code>display:grid; grid-template-columns:repeat(2,1fr)</code>，明確指定哪些卡片要 <code>grid-column:1/-1</code> 維持全寬橫幅（便當入口、公告列、戰術策略卡、TAIEX走勢圖、盤後速報、免責聲明），沒被指定全寬的卡片就會自動並排。儀表板頁自動並排成對的是 TAIEX·加權指數 跟 融資融券餘額；追蹤頁則是 MARKET PULSE 跟 產業熱力圖。</p>
-      <h3>33.2　沙盒測試的假陰性</h3>
-      <p>驗證過程中headless測試一度看到卡片沒有並排，後來查出是測試環境連不到 Tailwind CDN，導致某些 <code>hidden fixed</code> 的浮層彈窗因為 Tailwind 工具class沒生效，變成佔用了grid欄位——這是測試沙盒本身的限制，不是CSS邏輯寫錯，手動模擬「Tailwind正常運作」後重測，確認並排邏輯正確，部署後（真實環境有正常的Tailwind CDN）會如預期運作。</p>
+      <h3>33.1　MARKET PULSE 與產業熱力圖</h3>
+      <p>套用 <code>border:2.5px #000;shadow:4px 4px 0 #000;rounded-[18px]</code>。產業熱力圖原以為「混合輪動／避險輪動」要新邏輯，後來發現這個資料早就在算（<code>fetchSectorRotation()</code>），只是沒接到熱力圖卡片，新增 <code>renderSectorRotationWarn()</code> 重用既有資料即可。</p>
+      <h3>33.2　色塊磚改用5階離散色階</h3>
+      <p>色塊磚（<code>sectorTileColorTier</code>）改用精確反推的離散色階，取代連續透明度漸層：漲勢紅色系4個級距（&lt;1%／&lt;2%／&lt;3%／≥3%），跌勢綠色系5個級距（&lt;1%／&lt;2%／&lt;3%／&lt;4%／≥4%），代價是拿掉「當日最大成交量產業橘色特殊高亮」這個小功能。</p>
+      <h3>33.3　提醒文字不准寫死</h3>
+      <p>她明確要求提醒文字不能寫死，<code>buildTopMoversHtml</code> 改成吃既有算好的資金集中度％、領漲產業等真實數字動態組句，不是預先寫好的固定文案。</p>
+      <h3>33.4　自選股清單同步套用</h3>
+      <p><code>wtChipClass</code>／<code>buildWatchlistPillsHtml</code>／<code>WT_GRID</code>／管理彈窗全部重寫，過程中發現並修正了 <code>.wt-price</code> inline style 蓋過 JS 切換用 class 的 bug（凡是用 <code>classList</code> 切換顏色的元素，不能同時給它 inline style 打底色）。管理彈窗改成360px＋黑框＋拖曳把手（純視覺，無接後端邏輯）。</p>
+      <div class="callout">
+        <span class="callout-label">反AI視覺規則</span>
+        <p>禁止 <code>shadow-sm/md/lg</code>、模糊（blur）、漸層、<code>rounded-2xl</code> 以上的圓角；卡片一律 <code>border-card border-ink shadow-hard</code>，按鈕一律 <code>rounded-pill</code>。這套規則從這一輪開始成為往後所有視覺改版的預設標準。</p>
+      </div>
     </div>
     <button class="read-more" data-target="sec-33"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
   </article>
 
   <!-- ===================== 三四 ===================== -->
   <article class="post" id="sec-34">
-    <span class="post-tag">bug修正／體驗調整</span>
-    <h2><span class="bar"></span>三四、亞股產業連動確認卡片改版（2026-08-09）</h2>
+    <span class="post-tag">工具新增</span>
+    <h2><span class="bar"></span>三四、融資融券診斷工具與盤後速報可點擊（2026-08-23）</h2>
     <div class="teaser">
-      <p>追蹤頁「亞股產業連動確認」卡片改成直式堆疊的3張大卡，資料綁定完全沒動，只換視覺。</p>
+      <p>融資融券5日表偶爾會過期，這次補了一支後端診斷端點跟一個獨立的手動補資料小工具；盤後速報的個股列也改成可以直接點進去看圖表。</p>
     </div>
     <div class="post-full">
-      <h3>34.1　新版排列</h3>
-      <p>原本3橫排小卡改成直式堆疊：卡1「日經」（左框紅）、卡2「KOSPI」（左框藍）、卡3「同步走勢」（左框灰）。每張卡配國旗藥丸圖示＋20px粗體等寬字體數值藥丸，漲用綠色系底色（<code>#EEF7F0</code>／<code>#1E8E3E</code>）、跌用紅色系底色（<code>#FFF1F0</code>／<code>#C5221F</code>）——這是當時暫定的配色，後續在第42章統一改成台股慣例的紅漲綠跌。</p>
-      <h3>34.2　資料完全沿用既有函式</h3>
-      <p>只重寫了 <code>asiaLinkCardBlock(e,t)</code> 這一個渲染函式，<code>computeAsiaLightState</code>／<code>formatAsiaDataTime</code> 等資料判斷邏輯跟呼叫點完全沒動；卡3同步走勢維持原本的 green/red/yellow 三段判斷，只是改用兩個小型數值藥丸分別顯示日經跟KOSPI。</p>
+      <h3>34.1　融資融券診斷</h3>
+      <p>worker.js 新增 <code>logMarginDebug()</code> 寫入 KV，並開一支 <code>GET /api/debug/margin-balance-status</code> 診斷端點，等 cron 跑完可以直接查原因，不用再靠猜測。</p>
+      <h3>34.2　手動補資料工具（獨立HTML）</h3>
+      <p>另外做了一支獨立的「融資融券手動補資料.html」，呼叫既有的 <code>/api/tw/backfill-margin</code>：用登入通行碼自動換 token（方便手機操作，iOS 上 DevTools 不好用），CORS 白名單只認 <code>sa66344.github.io</code>，所以部署流程跟主 App 一樣要走 EZPage。之後又加了手動新增／刪除列的功能。</p>
+      <h3>34.3　盤後速報個股可點擊看圖表</h3>
+      <p>7種分類卡片共用的 row 樣板從純 <code>&lt;div&gt;</code> 改成 <code>&lt;button class="daily-report-row" data-symbol&gt;</code>，用事件委派（delegated click）呼叫 <code>loadStock(symbol)+switchTab("daily")</code>，點一下就能跳去看該檔的日線圖。</p>
     </div>
     <button class="read-more" data-target="sec-34"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
   </article>
 
   <!-- ===================== 三五 ===================== -->
   <article class="post" id="sec-35">
-    <span class="post-tag">本次重大改版</span>
-    <h2><span class="bar"></span>三五、戰術策略卡版面演進：分卡到合併（2026-08-09）</h2>
+    <span class="post-tag">視覺全面改版</span>
+    <h2><span class="bar"></span>三五、五日分析與魚寶AI視覺改版（2026-08-23）</h2>
     <div class="teaser">
-      <p>戰術策略卡（原「盤勢定調」）這個章節記錄它經歷的版面路線：先拆成4張獨立白卡，後來又依照使用者回饋合併回同一張卡片，籌碼表格也曾經新增又拿掉。</p>
+      <p>五日分析頁面（頁首、教學卡、掃描按鈕、洗盤急診室、黃金觀測清單）跟魚寶AI快捷提問全面套用 neo-brutalism 語彙，並新增一張用真實資料算出來的「今日統計」卡。</p>
     </div>
     <div class="post-full">
-      <h3>35.1　第一輪：拆成4張獨立卡片</h3>
-      <p>依照當時參考設計圖，拆成 MARKET THESIS（headline＋描述＋WIND SCORE進度條＋外資/投信表格）、ACTION TODAY、OUTLOOK TOMORROW、SHORT SWING 四張各自獨立的白色卡片，移除原本的裝飾動畫（流水底紋、微光掃描、風向流動SVG線條），改成乾淨的白卡風格。外資/投信表格用的是真實資料（<code>i.foreign</code>／<code>i.trust</code>），「結構」欄位借用既有 <code>chipBull</code>／<code>chipBear</code>／<code>chipFxSellTrBuy</code>／<code>chipFxBuyTrSell</code> 四分法真實判斷；「走勢」欄位因為沒有逐日序列資料能畫真的折線圖，改用買賣方向箭頭代表，刻意不模擬假的走勢線。</p>
-      <h3>35.2　第二輪：拿掉籌碼表格、四卡合併回一張</h3>
-      <p>回饋「戰術策略的籌碼那塊不要」，把外資/投信表格整個拔掉；四張獨立卡合併回同一個 <code>&lt;div&gt;</code> 容器，子區塊之間改用細分隔線區隔，不再各自獨立卡片外框。</p>
-      <h3>35.3　子區塊標題英文改中文</h3>
-      <p>ACTION TODAY／OUTLOOK TOMORROW／SHORT SWING 三個英文標題陸續改成中文「今日提醒」／「明日注意」／「短波提醒」；右上角原本加的英文badge（今日動作／明日預判／短波提醒）後來也拿掉，因為標題本身已經是中文了，不用重複。</p>
+      <h3>35.1　五日分析改版</h3>
+      <p>逐一找到真實的 <code>renderControlPanel()</code> 對照 mockup 套色，不發明新結構（結構本來就幾乎一樣）。新增「今日統計」卡，用既有 <code>sortedResults</code> 算真實數字（黃金數／觀測清單數／急診室數／拉回觀察數），沒掃描過就顯示「--」，不硬湊假數字。掃描按鈕下方的4個時段標籤（09:10／11:00／12:30／13:00）引用自使用手冊「使用建議步驟」章節的真實建議時段，做成純裝飾用的 span 而非 button，避免誤導使用者以為是可互動元件。</p>
+      <h3>35.2　魚寶AI快捷提問改版</h3>
+      <p>原本用 native <code>&lt;select&gt;</code> 下拉選單裝16個真實快捷提問（分5個 optgroup）。改成可收合的卡片網格（collapse-toggle＋5個分類，各用5色左側色點區隔），保留全部16個真實問題文字＋<code>FISHBAO_QUICK_CONTEXT_KEY</code> context 對應邏輯不變，只是從 <code>change</code> 事件改成 delegated click。</p>
       <div class="callout">
-        <span class="callout-label">版面決策的來回</span>
-        <p>這個章節橫跨好幾輪對話，版面方向反覆調整過幾次，最終定案是：單一卡片、無籌碼表格、中文標題、無右上角英文badge。之後如果又收到跟這裡矛盾的參考圖，優先確認是舊版設計稿還是最新要求。</p>
+        <span class="callout-label">逆向工程方法論</span>
+        <p>收到的 mockup／design reference 常常是完全不同的假想App（不同UI框架、不同欄位命名），只能拿來抽取視覺token，不能照搬內容結構。React Artifact 匯出的編譯bundle，用 python grep 中文字串常數（例如某個提示文案）定位 <code>createElement</code> 呼叫，能挖出精確的 hex 色碼／px／border／shadow 規格，比肉眼比對截圖準確很多。</p>
       </div>
     </div>
     <button class="read-more" data-target="sec-35"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
@@ -1492,172 +1493,82 @@
 
   <!-- ===================== 三六 ===================== -->
   <article class="post" id="sec-36">
-    <span class="post-tag">bug修正／體驗調整</span>
-    <h2><span class="bar"></span>三六、WIND SCORE 語意修正與五段式文案（2026-08-09）</h2>
+    <span class="post-tag">重大新增：Shadow Mode</span>
+    <h2><span class="bar"></span>三六、V2.0.1三層漏斗規格書：Shadow Mode 導入（2026-08-23）</h2>
     <div class="teaser">
-      <p>發現戰術策略卡的 WIND SCORE 分數其實從一開始就是美股連動風力分數，不是技術面多空分數，只是旁邊的建議pill誤用了大盤燈號在算多空；之後又把17個情境的文案重寫成「先講白話／盤勢判定／今日提醒／明日注意／短波提醒」五段式結構。</p>
+      <p>依正式規格書（Candidate Pool→Watch Pool→Core Watch 三層漏斗）新增了一整套 V2 分類邏輯，但因為族群分數（SectorScore）資料覆蓋率嚴重不足，這套邏輯目前只是「影子計算」，附加資訊用，完全不影響畫面上實際看到的選股結果。</p>
     </div>
     <div class="post-full">
-      <h3>36.1　WIND SCORE 是真 bug，不是重新設計</h3>
-      <p>查程式碼發現進度條上的數字（<code>n</code>）從一開始就是 <code>lastWindIndexResult.score</code>（美股連動風力0-10分，<code>computeWindIndex()</code> 算的），本身是對的；問題出在旁邊的建議pill：原本誤用 <code>marketLightCache.state</code>（大盤燈號紅/綠）在算「偏多/偏空」，跟風力分數的語意完全對不起來。修法：pill 改成直接讀 <code>lastWindIndexResult.action</code>（<code>WIND_TIERS</code> 這個陣列本來就內建每個風力等級對應的建議動作文字，例如「疾風（減碼）」配「啟動風險控制，賣出20%-30%」），沒有另外發明新的分類邏輯；進度條兩端標籤也從「BEAR 0」／「10 BULL」改成「平穩 0」／「10 恐慌」，符合風力語意。</p>
-      <h3>36.2　五段式文案改版</h3>
-      <p>她請 Gemini 把17個情境重寫成「先講白話→盤勢判定→今日提醒→明日注意→短波提醒」五段式結構（原本只有先講白話＋今日提醒＋明日注意三段，短波提醒是完全獨立於主情境之外的判斷函式）。改版前先確認四個關鍵決策：①函式名稱以程式碼實際的 <code>renderTodayTomorrowModule()</code> 為準；②短波提醒採「折衷版」——保留原本 <code>buildShortSwingNote()</code> 的獨立矛盾偵測邏輯（不管主情境樂不樂觀，籌碼／融資融券／風力／外資今日方向任一觸發都會示警），底文字換成新文案，觸發時額外疊一行警示、不觸發就乾淨顯示；③版面空間可以變長沒關係，今日提醒／明日注意從清單改成單一段落；④新詞彙（加入觀察、取消觀察等）純文字敘述，不做成真的可以點的按鈕。</p>
-      <h3>36.3　後續：加回原本文案當補充</h3>
-      <p>後來覺得新文案太短，把改版前的原始條列細節加回來當補充——不是取代，是疊加：每個情境新增 <code>xOrig</code>／<code>bOrig</code> 陣列，模板變成「新文案段落＋底下補充清單」的組合。（這個補充清單後來在第44章又因為跟摘要句重複而簡化，詳見該章。）</p>
+      <h3>36.1　規格書涵蓋內容</h3>
+      <p>三層漏斗（Candidate Pool→Watch Pool→Core Watch）、Trigger（新鮮點火 OR 布林壓縮爆量）、Dynamic Market Gate 5級距表、Base Guards、KAMA StrongBear/Up 三點式定義、Hard Reject 與 Soft Tags、Volume／Deviation Quality 分層、Resurrection（弱勢復活）、Rank Score 100分權重制、Freshness Decay 5天衰減表、Defensive Mode。新增11支 <code>v2*</code> 開頭的純函式完整實作，在候選池計算裡幫每檔候選附加 <code>e.v2 = {layer, coreEligible, watchEligible, sectorStatus, rankScore, softTags, rejectionReasons}</code>。</p>
+      <h3>36.2　關鍵發現：族群分數覆蓋率問題</h3>
+      <p>用她自己的真實累積紀錄回測時發現：實際短線候選裡，有族群分數資料的只有0.3%（後來抓出資料涵蓋率問題，扣掉欄位還沒發明的樣本後，真正有機會的樣本裡覆蓋率約23%，樣本仍太小）、新鮮點火為「是」的幾乎是0筆。若嚴格套用規格書「Core Watch必要資料都要有值」的門檻，用真實資料回測，過去這段時間會有0檔通過——root cause 是族群分類的底層資料只涵蓋約30個熱門主題、400～500檔精選股，不是全市場約1700檔的完整產業分類。</p>
+      <div class="callout">
+        <span class="callout-label">正式決策：方案1＋Shadow Mode過渡</span>
+        <p>不接受「缺資料只扣分仍可進Core」的方案（怕打壞大盤→族群→個股的三層架構精神）。改採：①先擴充族群分數資料來源；②族群分數缺資料時標記 <code>sectorStatus="MISSING"</code>，可留在 Watch Pool，但絕對不得進 Core Watch，不當0分、不當 Hard Reject；③現階段UI／選股結果完全不變，V2 只是 shadow 計算附加欄位；④等族群覆蓋率≥90%才正式啟用 Core Hard Gate。</p>
+      </div>
+      <h3>36.3　族群分類架構調查</h3>
+      <p>調查後確認：官方38類產業分類（<code>lookupSector()</code>）理論上涵蓋全市場，但族群分數實際依賴的資料在更早之前就已經改成「完全比照26大實戰題材分類」取代官方產業別分組，是刻意的設計決定（純標籤式設計，不在26大題材名單裡的股票，熱力圖本來就不顯示，不是漏資料）。兩套詞彙完全不重疊，原本設想的 fallback 鏈實際上會一直失敗。真的要擴大覆蓋率只有兩條路：(A)謹慎擴充題材標籤本身；(B)另外做一套用官方38類分組的平行分數計算——這是全新的後端運算，不是現成的接線工作，這輪還沒有動手實作任一個。</p>
     </div>
     <button class="read-more" data-target="sec-36"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
   </article>
 
   <!-- ===================== 三七 ===================== -->
   <article class="post" id="sec-37">
-    <span class="post-tag">bug修正／體驗調整</span>
-    <h2><span class="bar"></span>三七、秘密愛心便當搬家與動態金句（2026-08-09）</h2>
+    <span class="post-tag">版面重設計</span>
+    <h2><span class="bar"></span>三七、黃金觀測清單卡片版面重設計（2026-08-23）</h2>
     <div class="teaser">
-      <p>便當卡從儀表板上方的簡單按鈕列，搬到盤後速報最下方並改成深色 ZEN MODE 卡片；標題簡化，固定文案也改成依戰術情境動態生成的恩如老師語氣金句。</p>
+      <p>個股卡片原本4個數值並排太擠，改成2×2版面：現價大字＋防守線並排，下面加一條真實距離百分比的進度條。</p>
     </div>
     <div class="post-full">
-      <h3>37.1　位置搬遷</h3>
-      <p><code>#lite-module</code> 從 <code>daily-report-content</code>（盤後速報內容區）外面、免責聲明前面重新插入——特意不是塞進 <code>daily-report-content</code> 裡面，因為那個區塊每次盤後速報刷新都會整個被 innerHTML 覆蓋掉，塞進去會被洗掉。<code>lite-entry-btn</code>／<code>lite-tour-btn</code> 兩個按鈕的 id 跟原本的點擊事件完全沒動，只改外觀跟文案。</p>
-      <h3>37.2　標題簡化</h3>
-      <p>「♡ ZEN MODE · 秘密愛心便當」簡化成「♡ 秘密愛心便當」，拿掉「ZEN MODE ·」這段前綴。</p>
-      <h3>37.3　動態金句：<code>buildZenDailyQuote()</code></h3>
-      <p>原本固定寫死的「今天不交易也是一種交易。留點現金，留點呼吸。」改成依照當天戰術情境動態生成、恩如老師教學語氣的金句。沒有另外發明一套17分支判斷邏輯，直接沿用 <code>renderTodayTomorrowModule()</code> 裡本來就算好的訊號（<code>m</code>=融資大減、<code>p</code>=散戶死扛、<code>n&gt;=7.5</code>=風力過高、<code>chipBull</code>/<code>chipBear</code>=籌碼四分法、大盤燈號），簡化成6種情境各配一句金句，兜不到任何情境（盤勢中性）時退回原本那兩句當預設值。呼叫點放在戰術策略卡渲染函式最後一行，每次戰術卡重新整理，便當卡的金句也會跟著同步更新，兩張卡不會顯示互相矛盾的判斷。</p>
+      <h3>37.1　版面調整</h3>
+      <p>黃金觀測清單卡片（全App最大視覺區塊）從4欄小方塊改成2×2版面——現價（大字）／防守線並排＋一條「距防守線N%」進度條（用既有收盤價跟日100MA真實算出來的距離百分比，不是套截圖上的精確數字，改用可驗證的真實距離百分比＋誠實的標籤文字，避免算錯誤導）。下面乖離（20MA）／成交量兩個小方塊，乖離用淡黃底（<code>#FFF9C4</code>）凸顯。卡片容器：<code>border:2.5px;rounded-[24px];shadow:5px 5px 0 #000;max-w-380px</code>。</p>
+      <h3>37.2　現價字級與顏色修正（同日後續）</h3>
+      <p>回報上輪卡片改版兩個問題：現價字級28px太大、跟防守線的20px不一致手機上會擠在一起；現價沒有紅漲綠跌。修正：新增 <code>chgPct</code> 欄位（重用既有算好的 <code>closes</code> 陣列，取前一日收盤價算漲跌%，沒有多打任何API），現價字級改成跟防守線一樣20px，顏色依漲跌方向紅漲 <code>#CC665C</code>／綠跌 <code>#1A9E4A</code>（跟App其他地方同一套慣例）。</p>
+      <h3>37.3　提示框顯示範圍擴大</h3>
+      <p>原本只有「健康拉回」類卡片才有的黃底提示框，擴大成只要有可用的提示文字，任何卡片都會顯示。同步修正一個重複顯示 bug：非健康拉回卡片時，提示內容改成從第2則開始顯示，避免同一段文字出現兩次。</p>
     </div>
     <button class="read-more" data-target="sec-37"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
   </article>
 
   <!-- ===================== 三八 ===================== -->
   <article class="post" id="sec-38">
-    <span class="post-tag">本次更新重點</span>
-    <h2><span class="bar"></span>三八、TAIEX／融資融券／盤後速報樣式統一（2026-08-09）</h2>
+    <span class="post-tag">選股邏輯：真正動候選篩選</span>
+    <h2><span class="bar"></span>三八、V3動態大盤閘門：魚小韭攻擊／秘密便當保守分流（2026-08-26）</h2>
     <div class="teaser">
-      <p>三張卡片統一改成白底＋深黑細框（不是原本品牌淺色調色盤）＋放大字體，TAIEX 跟融資融券卡也加上跟盤後速報一致的收合式標題。</p>
+      <p>上一章的V2.0.1是Shadow Mode（只附加資訊，不影響畫面），這一章的V3才是真正接在魚小韭跟秘密便當實際候選篩選上、會真的改變每天看到幾檔的閘門。依3729筆回測數據（07-21～08-25）校準門檻，並讓便當自動比魚小韭保守一級。</p>
     </div>
     <div class="post-full">
-      <h3>38.1　白底黑框的教訓</h3>
-      <p>第一輪嘗試時用了品牌既有的淺色調色盤（<code>#FAF9F7</code> 淺灰底、<code>#E8E2D9</code> 淺褐邊框），跟參考圖裡「純白底＋深黑邊框」的實際視覺對比程度有落差，被回饋「都沒到定位」。教訓：參考圖如果是簡單色塊卡片，要照圖裡實際的對比程度抓色，不能自動套用品牌既有的淺色盤。修正後改成 <code>background:#fff</code>＋<code>border-color:#1A1A18</code>，四處統一，字級也全面放大一輪。</p>
-      <h3>38.2　collapse-toggle 收合標題</h3>
-      <p>TAIEX·加權指數 跟 融資融券餘額 兩張卡都加上跟盤後速報一致的收合式標題（圓點＋標題文字按鈕＋右側chevron），複用全站早就存在的通用 collapse 機制（<code>.collapse-toggle</code> class 搭配 <code>data-target</code> 屬性），沒有另外寫新的 JS 邏輯。融資融券卡的日期資訊也併進標題列（「融資融券餘額 · 約22:00更新 2026-08-07」），取代原本分開顯示的日期文字。</p>
-      <h3>38.3　融資融券「5-DAY TABLE」改版</h3>
-      <p>原本是單行文字列表，改成參考圖裡的英文mono標籤「5-DAY TABLE」＋真正的表格（日期／融資／融券三欄），資料完全沿用同一組 <code>history</code> 陣列，沒有新資料源。</p>
-      <h3>38.4　盤後速報8張子卡首次真的動了樣式</h3>
-      <p>盤後速報（20D HIGH/LOW、VOL SURGE、LIMIT MOVE、INST NET BUY、INST NET SELL、DISPOSITION、NOTICE、EX-DIVIDEND 共8張子卡）的邊框從淺褐色改成 <code>#1A1A18</code> 深黑，標題、tag pill、清單項目字級全部放大一輪，並把子卡順序調整成跟參考圖一致（VOL SURGE 移到第二個）。這個項目之前好幾輪都被判斷「範圍太大延後」，這次是第一次真的動了樣式；<code>generateDailyReport()</code> 資料抓取邏輯完全沒碰，8個分類的語意都不變。</p>
+      <h3>38.1　背景數據：3729筆回測</h3>
+      <table class="clean">
+        <thead><tr><th>分組</th><th>檔數</th><th>勝率</th><th>平均報酬</th><th>備註</th></tr></thead>
+        <tbody>
+          <tr><td>動能分數 &lt; 0</td><td>497檔</td><td>50.3%</td><td>+1.32%</td><td>分數低反而不差</td></tr>
+          <tr><td>動能分數 ≥ 60</td><td>14檔</td><td>21.4%</td><td>-5.0%</td><td>相關係數-0.17，反指標，必須設上限</td></tr>
+        </tbody>
+      </table>
+      <p>另外兩個具體案例：8/08候選一天內從95檔驟降到4檔（當時大盤分數70分屬多頭格局，卻因為族群分數門檻75太嚴而斷糧）；8/25 出現2426鼎元動能116.0、6226光鼎動能135.1＋量能3.17倍的異常值，事後判斷是爆量出貨，不該被當成短線候選。</p>
+      <h3>38.2　V3動態大盤閘門</h3>
+      <p>新增 <code>v3DynamicMarketGate(marketScore)</code>，跟V2.0.1的 Shadow Mode（<code>v2DynamicMarketGate</code>／<code>v2ClassifyCandidate</code>）是完全獨立的兩套系統，互不影響：</p>
+      <table class="clean">
+        <thead><tr><th>大盤分數</th><th>級距</th><th>乖離上限（週線）</th><th>量能倍數範圍</th><th>動能分數上限</th></tr></thead>
+        <tbody>
+          <tr><td>≥70</td><td>攻擊</td><td>30%</td><td>0.9～3.5倍</td><td>40分</td></tr>
+          <tr><td>55～69</td><td>輪動</td><td>25%</td><td>1.0～3.2倍</td><td>40分</td></tr>
+          <tr><td>&lt;55</td><td>防守</td><td>15%</td><td>1.2～2.5倍</td><td>35分</td></tr>
+        </tbody>
+      </table>
+      <p>動能分數上限從原本寫死的80分大幅收緊（依上表回測60+勝率只剩21.4%），超過上限的檔次移到「噴出觀察」而不是「短線候選」。族群分數門檻因為覆蓋率仍只有0.3%～23%，依08-23的決策繼續不硬擋，不重蹈8/08斷崖的覆轍。</p>
+      <h3>38.3　B方案：魚小韭攻擊／秘密便當保守一級</h3>
+      <p>魚小韭主池用大盤分數直接查表（<code>gateFish</code>）；秘密愛心便當用「大盤分數 − 10」查同一張表（<code>gateBento</code>），讓便當自動比魚小韭保守一級——例如大盤70分時，魚小韭是「攻擊」級距，便當則落在「輪動」級距，門檻更嚴、候選更少而精。</p>
+      <h3>38.4　V轉急漲豁免</h3>
+      <p>單日噴出（漲幅≥6%或漲停）＋站上日均線＋量能≥1.8倍＋週線乖離未超過50%，可以豁免乖離跟量能天花板兩道防線，避免像萬海這種底部急拉的標的被誤殺。8/25鼎元、光鼎那種動能超過100＋量能3倍以上的爆量出貨案例，則會被量能天花板與動能上限一起擋到「噴出觀察」，不進短線候選。</p>
+      <div class="callout">
+        <span class="callout-label">跟第三六章 Shadow Mode 的關係</span>
+        <p>V2.0.1（第三六章）的 <code>e.v2</code> 附加欄位維持 Shadow Mode 不變，繼續不影響畫面選股結果；V3（本章）是完全獨立的一套新函式，才是真正接在候選篩選（<code>getXiaojiuCandidatePools()</code> 的短線候選、秘密便當的候選入口）上的閘門。兩套系統用不同的函式名稱區分，互不覆蓋。</p>
+      </div>
     </div>
     <button class="read-more" data-target="sec-38"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
-  </article>
-
-  <!-- ===================== 三九 ===================== -->
-  <article class="post" id="sec-39">
-    <span class="post-tag">本次重大改版</span>
-    <h2><span class="bar"></span>三九、追蹤頁美股風向與亞股連動真實資料改版（2026-08-09）</h2>
-    <div class="teaser">
-      <p>依照一份 React 設計稿的視覺重寫美股風向監測、亞股連動卡、美股四大指數三個區塊，資料綁定100%沿用既有的真實來源，四大指數卡新增真的 sparkline 走勢圖。</p>
-    </div>
-    <div class="post-full">
-      <h3>39.1　容器對應的真相</h3>
-      <p>原本以為 <code>#market-wind-gauge</code> 只裝半圓儀表，<code>#market-wind-us</code> 裝亞股連動＋美股指數；查程式碼才發現實際上 <code>#market-wind-gauge</code> 裝的是「儀表＋亞股連動卡」（<code>windGaugeBlock(e,t)+asiaLinkCardBlock(e,t)</code>），<code>#market-wind-us</code> 裝的是「美股四大指數迷你卡」（<code>renderUsMiniCards(e,t)</code>）。最終決策是尊重實際程式碼結構，直接重寫這三個既有函式的視覺樣式，而不是硬把設計稿切好的靜態HTML塞進錯的容器。</p>
-      <h3>39.2　美股風向監測</h3>
-      <p><code>windGaugeBlock(e,t)</code> 外層卡片殼改成白底細灰框＋頂部三色漸層線＋「RISK ON X/10」深色pill；內部SVG指針儀表（<code>renderWindGaugeCard()</code>）完全沒動，本來就是真的動畫指針，沿用 <code>lastWindIndexResult.score</code>。</p>
-      <h3>39.3　亞股連動卡與美股四大指數</h3>
-      <p><code>asiaLinkCardBlock(e,t)</code> 改成國旗徽章＋左側色條＋右側大字級百分比badge樣式，資料完全沿用既有 <code>computeAsiaLightState</code>／<code>formatAsiaDataTime</code>／<code>e.qqq.chgPct</code>／<code>t.nikkei.chgPct</code>，沒有新資料源。<code>renderUsMiniCards(e,t)</code> 四張迷你卡改白底卡片樣式，並新增真的 sparkline 走勢線——<code>fetchUsTicker()</code> 本來就有內部抓5天Yahoo資料算漲跌幅，只是沒把逐日收盤價陣列回傳出去，這次補上讓它把 <code>closes</code> 也回傳，走勢線用這組真實5日資料畫，不是假資料。</p>
-      <div class="callout">
-        <span class="callout-label">刻意保留的範圍縮減</span>
-        <p>「產業資金熱力圖」這次刻意沒有套用設計稿視覺，保留現有的 canvas 繪製 treemap 系統——它已經是一套完整可用的真實系統（D1快照資料＋真實TOP5漲跌清單＋主流輪動摘要），跟設計稿的純DOM色塊風格結構完全不同，硬套風險高、報酬低，之後如果要動，需要先明確討論是「重做整套繪圖邏輯」還是「只調表面樣式」。</p>
-      </div>
-    </div>
-    <button class="read-more" data-target="sec-39"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
-  </article>
-
-  <!-- ===================== 四十 ===================== -->
-  <article class="post" id="sec-40">
-    <span class="post-tag">bug修正／體驗調整</span>
-    <h2><span class="bar"></span>四十、假日防呆：週末不計算快照（2026-08-10）</h2>
-    <div class="teaser">
-      <p>懷疑系統會把假日也算進去、跟前一天紀錄重複多一天。查證後在 worker.js 的每日快照函式最前面新增明確的星期幾判斷，週六日直接跳過，不呼叫任何抓取。</p>
-    </div>
-    <div class="post-full">
-      <h3>40.1　原本只有間接防護</h3>
-      <p>查 <code>scheduled()</code> 發現只有19:45補跑的 cron trigger 字串本身寫死 <code>MON-FRI</code>（Cloudflare層級擋週末），主要17:30快照走的是 <code>runDailySnapshot(env)</code>，函式內部完全沒有星期幾判斷，只靠一個「比對台積電（2330）收盤價是否跟D1最新一筆相同」的哨兵機制——這是專門為颱風假（平日但沒開盤，TWSE有時會回傳前一天舊資料）設計的。這個哨兵機制理論上剛好也能間接擋住週末（如果TWSE在週六日回傳的還是週五收盤價，2330收盤價一樣就會被判定跳過），但這是巧合擋到、不是明確設計，萬一TWSE在假日回傳的資料細節不是逐位元組相同就會漏接。</p>
-      <h3>40.2　新增明確的星期判斷</h3>
-      <p>在 <code>runDailySnapshot()</code> 最前面新增：用台北時區判斷今天是星期幾（<code>new Date().toLocaleString('en-US',{timeZone:'Asia/Taipei'})</code> 算 <code>getDay()</code>），結果是0（週日）或6（週六）就直接 <code>return {skipped:true, reason:'weekend'}</code>，完全不呼叫任何TWSE抓取。跟原本的颱風假哨兵機制並存、互不衝突——哨兵機制繼續防「平日但沒開盤」，這個新增的判斷專職防「週六日」。</p>
-      <div class="callout">
-        <span class="callout-label">跟 wrangler.toml 的關係</span>
-        <p>這個防呆是新增在 <code>runDailySnapshot()</code> 函式內部，不是改 cron trigger 字串本身（那是 wrangler.toml 層級的部署設定）。如果 wrangler.toml 本來就已經有 MON-FRI 限制，這等於是雙重防護，不會互相衝突。</p>
-      </div>
-    </div>
-    <button class="read-more" data-target="sec-40"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
-  </article>
-
-  <!-- ===================== 四一 ===================== -->
-  <article class="post" id="sec-41">
-    <span class="post-tag">本次重大改版</span>
-    <h2><span class="bar"></span>四一、五日分析自動篩選、置頂與盤中記錄警示（2026-08-10）</h2>
-    <div class="teaser">
-      <p>五日分析頁面這輪合併了四項改動：切分頁時自動排除已經不追蹤的標的、最健康的標的自動置頂、新增混合型的盤中狀態記錄與警示機制、新增直接跳去看K線圖的按鈕。</p>
-    </div>
-    <div class="post-full">
-      <h3>41.1　自動排除已移除標的（真bug）</h3>
-      <p>切到「五日分析」分頁時，原本會無條件直接沿用上次掃描的快取（<code>lastControlScanResults</code>）重畫，沒有跟當下真實的自選股／魚小韭／觀測槽狀態重新比對——如果之後把某檔股票從來源清單刪掉，快取裡還留著舊分數，畫面會一直顯示已經不追蹤的標的、不會自動消失。修法：改成拿 <code>buildControlMasterList()</code>（每次呼叫都重新讀當下真實狀態）算出「現在真的還在追蹤」的symbol集合，跟快取結果取交集再送進渲染，分數／掃描結果照樣沿用不用重新掃描，只是把已經不在任何來源的標的濾掉。</p>
-      <h3>41.2　最健康的自動置頂</h3>
-      <p><code>renderControlPanel()</code> 內部新增排序：依 VCP 動能分數由高到低排（被否決或沒分數的排最後），讓黃金觀測清單裡最健康的標的自動排在最前面，不用自己往下滑找。</p>
-      <h3>41.3　盤中狀態記錄與警示（混合型）</h3>
-      <p>設計討論後採「混合型」：被動的手動記錄＋主動的自動巡檢警示。<code>recordIntradayStatus(symbol, silent)</code> 抓即時報價、算盤中姿態（均價線防守／量能比／上影線警示，沿用既有 <code>checkIntradayPosture()</code>，不是新邏輯）、用 <code>classifyIntradayTone()</code> 把訊號組合成danger／warn／ok三級，存一筆帶時間戳的紀錄到localStorage（每檔每天最多存10筆，換日自動歸零）。</p>
-      <p><strong>被動記錄：</strong>每張黃金觀測清單卡片新增「記錄現況」按鈕，加上一排小圓點時間軸顯示今天記錄過的每一筆（滑鼠移上去看時間跟狀態），按下去只重畫這張卡片，不用整頁重render。</p>
-      <p><strong>主動巡檢：</strong>只在切到「五日分析」分頁的當下觸發一次（不是計時器，避免重蹈「一直重新整理」的問題），只查魚小韭真正持有中的標的（避免對整份聯集包含候選推薦都打即時報價），有查到轉差的就整合成一則toast跳出來，不會每檔各跳一則洗版；只在09:00~13:30盤中時段自動查，避免收盤後打空氣。</p>
-      <h3>41.4　跳轉圖表按鈕</h3>
-      <p>每張卡片新增「圖表」按鈕，複用掃描頁「代表股」清單本來就有的 <code>handleScanGotoChart(symbol)</code>（切到日線分頁＋載入該股票＋自動捲到最近40根K棒），沒有另外寫一套跳轉邏輯；點下去會直接切走到日線分頁，離開五日分析畫面。</p>
-    </div>
-    <button class="read-more" data-target="sec-41"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
-  </article>
-
-  <!-- ===================== 四二 ===================== -->
-  <article class="post" id="sec-42">
-    <span class="post-tag">bug修正／體驗調整</span>
-    <h2><span class="bar"></span>四二、追蹤頁紅漲綠跌統一與產業熱力圖明細（2026-08-10）</h2>
-    <div class="teaser">
-      <p>美股四大指數卡的漲跌色改成跟品牌一致的紅漲綠跌，日經／KOSPI／美股指數的數字本身也統一上色；「放大檢視」熱力圖彈窗新增不用點選就能看到的全部產業明細清單。</p>
-    </div>
-    <div class="post-full">
-      <h3>42.1　紅漲綠跌統一</h3>
-      <p><code>renderUsMiniCards()</code> 原本沿用參考設計稿的美股慣例（綠漲紅跌），跟品牌其他地方（紅漲綠跌，跟 <code>brand.up</code>／<code>brand.down</code> 一致）相反，改成統一的紅漲綠跌配色（<code>#CC665C</code>／<code>#5A8A7D</code>），sparkline 線條顏色也跟著改。<code>asiaLinkCardBlock()</code> 跟 <code>renderUsMiniCards()</code> 原本指數數字本身寫死黑色（只有旁邊的百分比徽章有上色），這次統一改成套用方向色，數字顏色跟徽章一致。</p>
-      <h3>42.2　顯示實際指數點位</h3>
-      <p>日經225／KOSPI 原本只顯示漲跌百分比，這次新增顯示實際指數點位（<code>fetchUsTicker()</code> 本來就有回傳 <code>price</code>，只是原本卡片沒放出來），加千分位格式化。</p>
-      <h3>42.3　產業熱力圖明細清單</h3>
-      <p>「放大檢視」彈窗（點右上角🔍按鈕開啟，本來就存在的功能）原本只顯示「目前有點選哪一格」的單一產業明細，沒點就是空的提示文字。改成不管有沒有點選，下面固定列出全部產業各自的明細卡片（依成交規模排序，跟熱力圖色塊本身排序一致），資料完全沿用既有 <code>computeSectorItems()</code> 結果（每個產業本來就帶代表股清單），沒有新增資料來源；保留點色塊會捲動並閃爍對應卡片的功能，不是拿掉點選、是額外多顯示全部。</p>
-    </div>
-    <button class="read-more" data-target="sec-42"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
-  </article>
-
-  <!-- ===================== 四三 ===================== -->
-  <article class="post" id="sec-43">
-    <span class="post-tag">bug修正／體驗調整</span>
-    <h2><span class="bar"></span>四三、掃描頁範圍切換 bug 修正（2026-08-10）</h2>
-    <div class="teaser">
-      <p>掃完自選股跟鯨魚雷達後無法隨意切換，切換到還沒掃過的範圍時畫面沒有任何反應，容易誤以為要重新整個掃描一次。</p>
-    </div>
-    <div class="post-full">
-      <h3>43.1　真正的問題出在畫面回饋，不是快取邏輯</h3>
-      <p><code>persistScanCache()</code>／<code>restoreScanCacheIfFresh()</code> 本身的快取存取邏輯是對的；真正的問題在按鈕的click handler：原本用 <code>restoreScanCacheIfFresh() && lastScanVisibleRows.length > 0 && renderScanCards()</code> 這串邏輯運算子串起來，如果切換過去的範圍今天「還沒掃過」（沒有快取），<code>restoreScanCacheIfFresh()</code> 回傳 false，整條運算式直接短路，<code>renderScanCards()</code> 根本不會被呼叫——畫面上還留著切換前那個範圍的舊卡片原封不動，看起來像「切了沒反應」，其實是切了，只是沒人清空畫面、也沒提示「這個範圍還沒掃過」。</p>
-      <h3>43.2　修法</h3>
-      <p>改成明確的條件判斷：有快取就照舊還原重畫；沒快取就主動清空掃描清單、印出「這個範圍今天還沒掃描過，請按下方掃描鍵開始」的明確提示，不會再留著舊資料混淆視聽。</p>
-    </div>
-    <button class="read-more" data-target="sec-43"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
-  </article>
-
-  <!-- ===================== 四四 ===================== -->
-  <article class="post" id="sec-44">
-    <span class="post-tag">bug修正／體驗調整</span>
-    <h2><span class="bar"></span>四四、戰術策略卡文案去重複（2026-08-10）</h2>
-    <div class="teaser">
-      <p>發現「今日提醒／明日注意」上面的摘要短句跟底下條列細節講的是同一件事，只是換句話說；拿掉重複的摘要句，只留條列內容，字級也升級成正文份量。</p>
-    </div>
-    <div class="post-full">
-      <h3>44.1　根因：第36章疊加補充造成的副作用</h3>
-      <p>第36章加回原始條列文案當補充後，形成「新版摘要句＋原始條列」的兩層結構，但兩層講的其實是同一件事（例如都在講「量縮盤整後帶量突破」），看起來像廢話重複。</p>
-      <h3>44.2　修法：讓條列變成唯一內容</h3>
-      <p>不是刪掉條列（那是先前明確要求加回來的內容），而是拿掉重複的摘要短句：模板改成「條列存在就不顯示摘要句，只顯示條列」；條列的字級跟顏色也從「補充細節」的小一號樣式升級成正文份量，因為它現在是唯一內容、不再是附屬品。因為17個情境都已經有populate條列內容，實務上摘要句現在幾乎不會被顯示，等於自然淘汰掉重複的那層，不用逐一改17個情境的文字內容本身。</p>
-    </div>
-    <button class="read-more" data-target="sec-44"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
   </article>
 
   <footer class="closing">
