@@ -496,6 +496,11 @@
       <li><a href="#sec-36"><span class="toc-num">三六</span>V2.0.1三層漏斗規格書：Shadow Mode 導入</a></li>
       <li><a href="#sec-37"><span class="toc-num">三七</span>黃金觀測清單卡片版面重設計</a></li>
       <li><a href="#sec-38"><span class="toc-num">三八</span>V3動態大盤閘門：魚小韭攻擊／秘密便當保守分流</a></li>
+      <li><a href="#sec-39"><span class="toc-num">三九</span>講義選股邏輯強化：起漲／強勢門檻放寬與新否決標籤</a></li>
+      <li><a href="#sec-40"><span class="toc-num">四十</span>W-MOAT護城河：五瓣開花正式計分（10分→13分制）</a></li>
+      <li><a href="#sec-41"><span class="toc-num">四一</span>K棒型態提醒與經典法則整合：日線＋週線</a></li>
+      <li><a href="#sec-42"><span class="toc-num">四二</span>買賣點模擬新增：KD鈍化續抱／杯柄突破／跳空回補買</a></li>
+      <li><a href="#sec-43"><span class="toc-num">四三</span>介面調整與 bug 修正彙整（2026-09-03～09-04）</a></li>
     </ul>
   </nav>
 
@@ -1569,6 +1574,143 @@
       </div>
     </div>
     <button class="read-more" data-target="sec-38"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 三九 ===================== -->
+  <article class="post" id="sec-39">
+    <span class="post-tag">選股邏輯：講義套用</span>
+    <h2><span class="bar"></span>三九、講義選股邏輯強化：起漲／強勢門檻放寬與新否決標籤（2026-09-03～09-04）</h2>
+    <div class="teaser">
+      <p>拿到3份講義（超簡單趨勢波段、技術分析、天機圖）精華彙整後，對照系統實際邏輯逐項比對，找到「篩太嚴抓不到起漲股」的根源，也補了幾個講義裡有、系統原本沒有的否決條件。</p>
+    </div>
+    <div class="post-full">
+      <h3>39.1　isSurgeCandidate（⚡極限噴出）放寬</h3>
+      <p>原本8個條件全部AND（量能≥2.5倍＋IBS≥0.85＋漲停或強勢旗標＋均線多頭＋創新高，缺一不可），比對講義的3K法／窄幅盤整後爆量，根本沒有要求同時漲停＋收在最高點。改成只留必要條件：結構安全（沒被否決／沒過熱）＋均線多頭＋KAMA向上＋量≥<strong>1.5倍</strong>（對齊講義「總量大於5日均量」，也跟<code>evaluateWeeklyBuy()</code>週線用的1.5倍門檻一致）＋創10日新高或突破。「漲停／強勢旗標」「IBS≥0.85」拿掉必要條件，不再強制。</p>
+      <h3>39.2　dailyStrongMatch（💪日線強勢）補量能檢查</h3>
+      <p>原本只看VCP評分≥3＋均線多頭排列，完全沒檢查量（四大法寶少了一個），補上「今日量&gt;5日均量」。</p>
+      <h3>39.3　三個新的否決／示警標籤</h3>
+      <table class="clean">
+        <thead><tr><th>標籤</th><th>判斷方式</th><th>講義出處</th></tr></thead>
+        <tbody>
+          <tr><td>崩潰</td><td>週20MA（或日20MA）5期未下彎＋今天乖離單日急殺到-7%以下</td><td>技術分析講義：「均線都還沒走壞，但股價突然大幅偏離均線暴跌」</td></tr>
+          <tr><td>價量背離</td><td>今天上漲＋量縮到5日均量0.7倍以下＋乖離月線超過15%（避免正常回檔誤判）</td><td>「股價上漲、成交量下滑，常是變盤前兆」</td></tr>
+          <tr><td>假突破</td><td>近10天內有跳空上漲缺口（幅度≥2%），且今天收盤第一次跌破缺口下緣</td><td>「缺口若幾天內就被填補，容易演變成假突破」</td></tr>
+        </tbody>
+      </table>
+      <p>三個都是 <code>computeBullBearSignals()</code> 裡新增的獨立判斷式，出現在被否決清單的空方訊號欄，各自有白話說明（點標籤跳toast）。</p>
+      <h3>39.4　季節性作帳月加分</h3>
+      <p>天機圖講義：「每年3、6、9、12月為法人作帳月，飆股容易出現在此時」。月份本身對當天所有候選股都一樣，沒有區分度，所以設計成「現在是作帳月」＋「這檔候選有外資或投信買超」兩個條件合起來才加分（<code>isSeasonalWindowMonth()</code>＋<code>hasInstitutionalNetBuy()</code>），放在排序鏈裡動能加速度之後、布林壓縮之前，屬於後段的tiebreaker，不會蓋過量能這種更直接的訊號。</p>
+      <h3>39.5　新增「窄幅盤整爆量」一鍵戰術套餐</h3>
+      <p>對照講義買進信號03（窄幅盤整，變為向上突破後買）、04（三角整理後向上突破買）、09（跳空暴漲後又突破盤整）：共同點是「盤整期間量縮到很安靜，突破那天才帶量」。組合條件為 <code>isPreBreakout || isBbSqueezeBreakout</code>，套用跟其他套餐一樣的過熱防護（乖離上限20%、動能上限60分）。</p>
+      <div class="callout">
+        <span class="callout-label">實測驗證</span>
+        <p>放寬前後對照9/3～9/4的快照：短線候選從3檔暴增到56檔，金融族群（92分）、航運族群（88分）大量進來，正好對到原本抱怨的「STRONG_BULL盤面卻篩不到熱門族群」情境。但56檔裡有63%量能其實在1.5倍以下（靠dailyStrongMatch較鬆的路徑進來）、32%動能分數是負的（這其實跟先前驗證的「分數越低隔期報酬越好」一致，不是bug）。門檻会不会需要再收紧，要等多存几天快照后用真实隔期报酬回测才能下定论，暫時先觀察。</p>
+      </div>
+    </div>
+    <button class="read-more" data-target="sec-39"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 四十 ===================== -->
+  <article class="post" id="sec-40">
+    <span class="post-tag">評分邏輯調整</span>
+    <h2><span class="bar"></span>四十、W-MOAT護城河：五瓣開花正式計分（10分→13分制）（2026-09-04）</h2>
+    <div class="teaser">
+      <p><code>computeWeeklyMoatScore()</code>裡的「🌸五瓣開花」（週MA5&gt;10&gt;20&gt;60&gt;240全數上揚）本來就有算，但只當畫面上的裝飾圖示，從沒真的加進分數——這次補上，天機圖講義形容它「勝率近100%」，權重給到跟「3K法突破」同級的+3分。</p>
+    </div>
+    <div class="post-full">
+      <h3>40.1　滿分變化</h3>
+      <p>原本D值50中軸防守(+3)、3K法突破(+3)、多頭鈍化(+2)、低檔位階(+1)、時間循環(+1)＝滿分10；加上五瓣開花(+3)後滿分變13。<code>e.weeklyMoat.score&gt;=3</code>這個既有長線候選門檻不受影響（原本任一單項條件就能達標）。</p>
+      <h3>40.2　五雷轟頂維持原樣</h3>
+      <p>查證過五雷轟頂（五條均線全數向下）本來就已經是一票否決、直接把分數壓到0分，透過既有的<code>score&gt;=3</code>門檻自然被擋掉，這次沒有再動。</p>
+      <h3>40.3　修掉一個「window覆蓋」造成的顯示bug</h3>
+      <p><code>weeklyMoatScoreCardHtmlFromResult</code>這支函式在檔案裡其實存在兩份——一份原始版本，另一份是後來某輪改版時用<code>window.weeklyMoatScoreCardHtmlFromResult = function(...)</code>蓋過去的「V2」版本。改13分制時只改到分數計算本身，沒發現畫面顯示被那份window覆蓋版本接管，導致畫面還停在舊的10分制文字。這次把兩份都同步改成13分制，並把五瓣開花正式排進項目清單裡。</p>
+    </div>
+    <button class="read-more" data-target="sec-40"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 四一 ===================== -->
+  <article class="post" id="sec-41">
+    <span class="post-tag">日線＋週線：新增提醒系統</span>
+    <h2><span class="bar"></span>四一、K棒型態提醒與經典法則整合：日線＋週線（2026-09-03～09-04）</h2>
+    <div class="teaser">
+      <p>把技術分析講義的K線基礎判讀、葛蘭碧8法則整套做成圖表上的「型態提醒」，跟原本的強買點／急漲賣買賣點模擬是分開的兩件事——型態提醒只負責告訴你「今天這根K棒／均線長怎樣」，不代表系統要你進出場。</p>
+    </div>
+    <div class="post-full">
+      <h3>41.1　K棒型態（<code>detectKCandlePatterns()</code>）</h3>
+      <table class="clean">
+        <thead><tr><th>型態</th><th>判斷方式</th><th>方向</th></tr></thead>
+        <tbody>
+          <tr><td>光頭陽線</td><td>上下影線都極短＋實體占比&gt;85%的紅K</td><td>偏多</td></tr>
+          <tr><td>長下影線</td><td>下影線&gt;2倍實體＋在低價圈（20日區間後25%）</td><td>偏多</td></tr>
+          <tr><td>長上影線</td><td>上影線&gt;2倍實體＋在高價圈（前25%）</td><td>偏空</td></tr>
+          <tr><td>長陰線</td><td>實體占比&gt;60%的黑K＋在高價圈</td><td>偏空</td></tr>
+          <tr><td>北方十字線／南方十字線</td><td>十字線（開收幾乎同價）在高價圈／低價圈</td><td>偏空／偏多</td></tr>
+          <tr><td>十字線（中性）</td><td>十字線不在高低價圈</td><td>中性</td></tr>
+          <tr><td>高價圈跳空下跌</td><td>今高&lt;昨低（缺口≥2%）且在高價圈，當天就是賣出時機</td><td>偏空</td></tr>
+          <tr><td>上影線隔日確認賣</td><td>昨天長上影線在高價圈，且今天真的收黑</td><td>偏空</td></tr>
+          <tr><td>布林頂／底＋RSI＋KD共振</td><td>觸及布林頂/底，且RSI、KD同時＞80或＜20（僅日線，週線未算RSI/KD）</td><td>偏空／偏多</td></tr>
+        </tbody>
+      </table>
+      <p>北方／南方十字線的建議文字會直接算出當天最高／最低價，對應講義判斷法則：「十字線最高價就是壓力，下一根K棒收盤高過十字最高價還會漲」。</p>
+      <h3>41.2　葛蘭碧8法則（<code>detectGranvilleSignal()</code>）</h3>
+      <p>原文8條規則裡②③都是「漲勢拉回未破均線」的程度延伸、⑥⑦都是「跌勢反彈不過均線」，合併成一條，共濃縮成6個可判斷訊號：①突破買、②③拉回不破、④乖離過大（留意反彈）、⑤跌破賣、⑥⑦反彈不過、⑧乖離過大（留意拉回）。日線用日20MA、週線用週20MA。</p>
+      <h3>41.3　13/26均線黃金交叉／死亡交叉</h3>
+      <p>技術分析講義關鍵圖形06/12：不同於系統原本的20/100MA，另外用13期/26期均線現算交叉，直接掛進<code>computeBullBearSignals()</code>（跟日線的KAMA金叉/死叉同一批），日線週線共用同一套邏輯自動生效。</p>
+      <h3>41.4　顯示規則</h3>
+      <ul>
+        <li>圖表上只留箭頭，不放文字：偏多用<strong>紅色</strong>向上箭頭（K棒下方）、偏空用<strong>綠色</strong>向下箭頭（K棒上方）、中性用灰色向下箭頭（K棒上方）——顏色跟App紅漲綠跌慣例一致，箭頭一律不疊在K棒實體上。</li>
+        <li>型態名稱＋白話建議改放在圖表上方灰底那條「隨手指移動更新」的資訊列，滑到哪根K棒就顯示那天的說明，同一列也補上了KD（K/D數值）、MACD數值（顏色比照紅漲綠跌）。</li>
+        <li>週線圖用<code>window.weeklyKPatternMap</code>、日線圖用<code>window.dailyKPatternMap</code>各自存表，互不影響；週線因為沒有算RSI/KD，布林+RSI+KD共振這一項目前只有日線才有。</li>
+        <li>跟「顯示空方／買賣點標記」VIP開關統一管控，關閉時型態提醒也一併不顯示。</li>
+      </ul>
+    </div>
+    <button class="read-more" data-target="sec-41"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 四二 ===================== -->
+  <article class="post" id="sec-42">
+    <span class="post-tag">買賣點模擬引擎新增</span>
+    <h2><span class="bar"></span>四二、買賣點模擬新增：KD鈍化續抱／杯柄突破／跳空回補買（2026-09-04）</h2>
+    <div class="teaser">
+      <p>這幾個是接進真正控管風險的日線買賣點模擬狀態機（<code>getSignalStrength()</code>），不是單純的型態提醒。</p>
+    </div>
+    <div class="post-full">
+      <h3>42.1　KD鈍化續抱（豁免「急漲賣」）</h3>
+      <p>天機圖講義：「當KD值來到80以上時...稱為多頭鈍化，持股要抱牢...強勢上漲即使有回檔短期仍可續抱」。連續2天K值都在80以上時，跳過「急漲賣」（乖離過大提前獲利了結）這個較軟性的訊號，讓正常拉回續抱；<strong>真正的「結構停損」完全不受影響</strong>，鈍化不代表不會跌，資金控管的紀律優先。</p>
+      <h3>42.2　跳空下跌後向上突破盤整買（<code>checkGapDownRecoveryBreakout()</code>）</h3>
+      <p>技術分析講義買進信號11：跳空下跌（前一天低點到缺口高點的落差≥2%）後至少盤整3天，今天收盤突破這段盤整期間的最高價。併入既有的<code>patternBreakout</code>判斷（跟旗形突破、箱型突破同一批），標籤顯示「跳空回補買」。</p>
+      <h3>42.3　杯柄型態（<code>detectCupAndHandle()</code>，型態提醒性質）</h3>
+      <p>另一本講義買進信號17：股價打底後漲回杯緣附近盤整（手把），帶量突破杯緣才算數。判斷邏輯：90天視窗找左杯緣高點→杯底（深度≥15%）→漲回杯緣93%以上→手把區橫盤（深度≤15%、不破杯底）→今天帶量（≥1.3倍20日均量）突破手把高點與杯緣。這個型態判斷主觀成分較高，只做成圖表上的☕提醒標記，<strong>沒有</strong>接進控管風險的買賣點狀態機，避免誤判增加假訊號。</p>
+      <h3>42.4　W底／頭肩底滿足點公式</h3>
+      <p>技術分析講義：「滿足點公式＝突破點＋（頸線到最低價的幅度）」，在<code>detectWPattern()</code>／<code>detectMPattern()</code>的回傳物件裡加了<code>target</code>欄位（M頭則是頸線減去對應幅度），純粹是額外算出來的參考停利／停損價位，不影響型態本身completed的判斷邏輯。</p>
+    </div>
+    <button class="read-more" data-target="sec-42"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
+  </article>
+
+  <!-- ===================== 四三 ===================== -->
+  <article class="post" id="sec-43">
+    <span class="post-tag">介面調整／bug修正</span>
+    <h2><span class="bar"></span>四三、介面調整與 bug 修正彙整（2026-09-03～09-04）</h2>
+    <div class="teaser">
+      <p>這輪順手修掉的幾個介面問題跟隱藏bug，跟選股邏輯本身無關，但都會影響實際使用體驗跟回測資料的準確度。</p>
+    </div>
+    <div class="post-full">
+      <h3>43.1　儀表板一鍵存快照按鈕</h3>
+      <p>公告列拿掉，原位置改成「魚小韭 存今日快照」按鈕，重用跟原本魚小韭頁一樣的存檔邏輯，按下去會換成轉圈圈＋「存檔中...」文字，避免連點，不管成功失敗最後都會用<code>finally</code>把按鈕還原。</p>
+      <h3>43.2　VIP買賣點標記真正鎖住</h3>
+      <p>原本VIP限定只擋在「切換開關」的按鈕上（能不能打開/關掉），但實際控制買賣點/W底/箱體/防守線畫不畫出來的<code>lectureSignalsEnabled</code>預設值是true，訪客從頭到尾都沒被真的擋下來。新增<code>lectureSignalsVisible()</code>＝<code>lectureSignalsEnabled && isVipUnlocked()</code>，9處實際繪圖判斷全部改用這個。</p>
+      <h3>43.3　新鮮點火CSV匯出bug修正</h3>
+      <p><code>buildXiaojiuDailySnapshotCsv()</code>原本讀<code>ignitionHistoryMap[e.symbol]</code>（主力熟客的20天點火次數計數器），跟真正的FreshIgnition（<code>cachedFreshIgnitionSet</code>）完全是兩件事，只是變數名字容易搞混，導致CSV裡新鮮點火欄位長期匯出成0%。改成讀<code>freshIgnitionCacheReady && cachedFreshIgnitionSet.has(e.symbol)</code>，跟候選判斷本身用同一份資料。第18992行「🔥累積亮燈」徽章刻意維持原樣不動（那個本來就該用主力熟客計數器）。</p>
+      <h3>43.4　MA10／MA50／volMa50 欄位缺失修正</h3>
+      <p>worker.js的<code>computeDailyViewServer()</code>回傳的ind物件本來就沒有ma10/ma5/ma50/volMa50這幾個key（20/100MA極簡鐵則改版時刻意拿掉的），但前端多處讀取這些欄位（損益預估防守線計算、多空標記判斷裡的<code>checkTrendMomentum()</code>）沒跟上，走伺服器路徑時會直接丟出「Cannot read properties of undefined」。在<code>computeDailyViewRemote()</code>既有的MA5/MA10補算區塊裡，順便用同一份陣列補回<code>ind.ma10</code>／<code>ind.ma5</code>／<code>ind.ma50</code>／<code>ind.volMa50</code>，不需要重算，也修好了「多空標記合併失敗，圖表只顯示VCP標記」這個連帶錯誤。</p>
+      <h3>43.5　MA開關膠囊跑到其他頁面下面</h3>
+      <p>檔案裡陸續疊了四代類似的「週線MA5/10/20/100/KAMA/BB切換膠囊」補丁（一代已被CSS鎖死隱藏），剩下的都沒處理「離開週線頁後怎麼藏起來」，導致膠囊殘留在魚小韭等其他頁面下方。沒有逐一改各代補丁本體，改成加一道通用防護：每秒檢查<code>#panel-weekly</code>是不是真的顯示中，不是的話把三個已知的膠囊id全部強制隱藏。</p>
+      <h3>43.6　「W底完成」文字重複W</h3>
+      <p>兩處標籤原本硬寫「Ｗ W底完成」（全形Ｗ裝飾字＋W底完成，疊出兩個W），拿掉多餘的裝飾字，改成單純「W底完成」。</p>
+      <h3>43.7　週線綠色固定燈號拿掉</h3>
+      <p>「創高續航」燈號其實疊了三層先前的補丁（<code>#weekly-trend-light</code>／<code>#price-light-bar</code>／一堆<code>#weekly-trend-light-fixed</code>樣式殘留），全部清掉，MA5/10/20/100/KAMA/BB工具列（另一個獨立功能）保留不動。</p>
+    </div>
+    <button class="read-more" data-target="sec-43"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
   </article>
 
   <footer class="closing">
