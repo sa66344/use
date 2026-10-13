@@ -2473,6 +2473,13 @@
         <li><b>顯示</b>：盤後、休市寫「明天」，盤中寫「今天」；已經碰到的寫「收盤已經…照紀律該賣了」；離出場 2% 內或已觸發用紅底，其他綠底。出場價低於成本時寫「就算出場也還有賺」。規則跟 styleStatus() 一致，只是換成明天的價位。</li>
         <li><b>參考數據(回覆她用)</b>：swing_features 6/15~10/13 漲停(當日+9.3%以上)1313 次，隔天上漲 57%、下跌 41%、平均 +1.9%，跌超過 5% 約 12%，連續漲停約 22%；5 天後中位數 +1%。多頭期間的數字。</li>
       </ul>
+      <h3>64.20　日K缺天自動補齊(漲幅超過10%的錯誤)</h3>
+      <ul>
+        <li><b>問題</b>：10/13 掃描「台股排行」出現 +20.8%。swing_features 檢查：427 檔裡 426 檔沒有 10/12 的K棒(Yahoo 日K缺這天)，所以 todayChgPct＝10/13 收盤對 10/8 收盤，是兩天的漲跌。同一個缺口也讓均線、量能、K線圖、持股當日漲跌、累積紀錄的5日報酬少算一天。</li>
+        <li><b>做法</b>：fetchStockDataMulti／fetchStockForScan 拿到 Yahoo 或 FinMind 的K棒後呼叫 ctRepairBarGaps()。交易日曆用證交所 FMTQIK(rwd 版，一個月一個請求，當月每天上午/下午各更新一次，存 localStorage ct_tday_YYYYMM)；最近3個月內「比第一根晚、比最後一根早」卻不在K棒裡的交易日就是缺天。補值來源：ctMarketDay(日期)＝證交所 MI_INDEX(type=ALLBUT0999，找有「證券代號」「收盤價」欄位的表)＋櫃買每日收盤行情(新版 www/zh-tw/afterTrading/dailyQuotes，失敗改舊版 stk_quote_result.php)，一天一個請求涵蓋全市場，存 localStorage ct_mkt_日期(只留5天)；兩邊都沒有的才逐檔用 FinMind 補(每次開 App 最多 30 檔)。補上的K棒帶 filled 欄位(market/finmind)。</li>
+        <li><b>補不到時</b>：最後一根的前一個交易日還缺，就在陣列上標 __gapPrev，computeScanRow 的 todayChgPct 改成 null(不顯示)，不顯示錯的數字。</li>
+        <li><b>注意</b>：櫃買兩個網址的欄位沒在線上驗證過(櫃買網站擋外部抓取)，所以新版用欄位名稱找、舊版用固定位置；都失敗會走 FinMind。舊的掃描快照(scan_snapshot_)還是舊數字，重新掃描就會正確。</li>
+      </ul>
     </div>
     <button class="read-more" data-target="sec-64"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
   </article>
