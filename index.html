@@ -2439,6 +2439,14 @@
         <li><b>長線名單</b>：.sl-row 點擊改呼叫 window.tdWeeklySheet(該列資料)，從下方彈出黑底面板：名稱＋適合度＋長線 x/4、現價大字與當日漲跌、週K(高300、畫出橘色虛線停損＝週20MA)、4 個長線條件(沒達到的變灰劃掉)、週20MA／停損離現價／週趨勢，按鈕「看完整圖表」(跳個股週線頁)、「放入觀測槽」(addSymbolToAquariumWatch)。點遮罩或 ✕ 關閉。</li>
         <li>新手導覽的「結果卡片」「長線名單」兩步說明同步更新。</li>
       </ul>
+      <h3>64.15　個股頁日線／週線黑底</h3>
+      <ul>
+        <li><b>需求</b>：她喜歡 64.14 的黑底週K，要個股頁自己的日線、週線也改成黑底。確認內容：①兩張圖都黑底、文字要明顯；②週線加 14個月／2年 切換；③多空底色保留，用原本「多空」按鈕開關；④上方股價區、按鈕列等一起黑底，所有文字跟顏色不能被底色吃掉。App 其他頁面維持白底。</li>
+        <li><b>圖表(head 裡的 td-dark-chart-patch)</b>：LightweightCharts 本身是凍結物件，所以複製一份再把 createChart 包一層；只要圖表容器在 #panel-daily／#panel-weekly 裡就套黑底(#1E1F23、格線 #2A2C31、軸文字 #A3A6AD)。之後加的線、K棒、成交量、標記、價格線顏色都經過 TD_DARK.colorFor() 換色：紅K #C8553D→#FF4D45、綠K #5E7D4A→#2BD46B、MA20 藍→#5B9BFF、MA100 →#D9B54A、KAMA →#E0904F；深灰黑的線(例如日線圖上的週20MA 階梯線)改黃 #E8E04A，深色標記文字改亮灰；多空底色這種很淡的半透明色塊改成同色系透明度 0.08~0.12，完全透明的保持透明。這樣不用逐一改幾十個畫圖函式。</li>
+        <li><b>畫面(body 最後的 td-dark-stock-script)</b>：#stock-view-bar、#panel-daily、#panel-weekly 底色 #16171A；tdDarkStockPass() 把亮的底塊換深、亮邊框換深灰、黑邊框換灰，再用「字實際所在的底色」算對比，灰字低於 7、彩色字低於 4.5 就調亮(紅→#FF4D45、綠→#2BD46B、其他混白)；放在亮色或彩色按鈕上的字(萊姆綠、資訊重整的紅)保留原色。每次都先還原自己上次改的字色再重算，所以按鈕開/關、分頁切換後顏色會跟著對。分頁按鈕、副圖選單用固定 CSS。標題列外圍兩層白邊只有在個股頁才換深色，離開會還原。觸發：MutationObserver(新增節點、文字、class 變動，節流 150ms)、switchTab、loadStock 後補跑。</li>
+        <li><b>週線範圍</b>：#weekly-chart-wrap 左上角 #td-wk-rg「14個月(61週)／2年(104週)」，window.tdWkRange(n) 用 setVisibleLogicalRange；renderWeeklyChart 原本預設 26 週改成呼叫 tdWkRange(上次選的，預設 61)。手指拖曳縮放照常。</li>
+        <li>新手導覽「週線」步驟、週線說明加上 14個月／2年 的說明。</li>
+      </ul>
     </div>
     <button class="read-more" data-target="sec-64"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
   </article>
