@@ -2429,6 +2429,16 @@
         <li><b>之後</b>：累積兩三週、經過不同盤勢，拉回優先穩定比較好才改魚小韭排序。同族群限制要先補產業分類，排在後面。</li>
         <li><b>實驗位(同日追加)</b>：她決定不只記錄，先撥最多 2 格短線真的買。computeXiaojiuPlan() 在大盤分數≥80(短線只買飆股)時，先呼叫 p("short", 拉回名單, …, cap, "pullback")：拉回名單＝短線候選依動能分數由低到高前 5 檔，cap＝XJ_PULLBACK_SLOTS(2) 減去已持有的實驗位。資金仍照「全部空位」平分；大盤過熱一天最多新增 1 檔的規則照樣適用，所以 2 格可能分兩天補滿。倉位多一個 pick:"pullback" 標記，理由前面加「🧲拉回優先(實驗位)」，出場規則跟一般短線完全一樣。大盤分數&lt;80 時原本的短線排序就已經是拉回優先(10/2 加的 pullbackRank)，不另外處理。</li>
       </ul>
+      <h3>64.14　黑底週K：鯨魚雷達卡片＋長線名單彈窗</h3>
+      <ul>
+        <li><b>需求</b>：她參考其他看盤 App 的黑底週K畫面，要鯨魚雷達卡片的週線圖改成那樣，長線名單點一下也要彈出同樣的圖。只改這兩處，個股頁的週線分頁不動；App 其他地方維持白底。</li>
+        <li><b>共用元件</b> window.tdWeeklyK(容器, 代號, {h, stop})：資料用 ctStyleFitBars(掃描快取)→沒有才 fetchStockForScan；buildWeeklyCandles 轉週K，自己算週20MA。lightweight-charts 一張圖裡放K棒＋週20MA(黃)＋週量(另一個價格軸，畫在下方 20%)。紅K #F2362F、綠K #22C55E、底色 #1E1F23。</li>
+        <li><b>畫面</b>：上方「週K・MA20 數值・14個月／2年」切換；第二行是最新一週(或手指指到那週)的日期、開高低收、量(1萬張以上用「萬張」)；圖上箭頭標出目前範圍的最高、最低；預設顯示最近 61 週(約14個月)，2年＝104 週，左邊多留兩根避免最低點的數字被切掉。</li>
+        <li><b>操作</b>：手指左右拖曳、兩指縮放、電腦滾輪縮放；上下滑仍是捲動頁面(vertTouchDrag 關閉)。圖上的點擊不會觸發卡片的其他動作。</li>
+        <li><b>鯨魚雷達卡片</b>：原本的 buildWeeklySparklineSVG 折線換成 &lt;div class="tdwk-lazy" data-sym&gt;，用 IntersectionObserver 捲到畫面附近(200px)才畫，MutationObserver 偵測卡片重畫後重新掛上。</li>
+        <li><b>長線名單</b>：.sl-row 點擊改呼叫 window.tdWeeklySheet(該列資料)，從下方彈出黑底面板：名稱＋適合度＋長線 x/4、現價大字與當日漲跌、週K(高300、畫出橘色虛線停損＝週20MA)、4 個長線條件(沒達到的變灰劃掉)、週20MA／停損離現價／週趨勢，按鈕「看完整圖表」(跳個股週線頁)、「放入觀測槽」(addSymbolToAquariumWatch)。點遮罩或 ✕ 關閉。</li>
+        <li>新手導覽的「結果卡片」「長線名單」兩步說明同步更新。</li>
+      </ul>
     </div>
     <button class="read-more" data-target="sec-64"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
   </article>
