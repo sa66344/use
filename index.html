@@ -2479,6 +2479,77 @@
         <li><b>做法</b>：fetchStockDataMulti／fetchStockForScan 拿到 Yahoo 或 FinMind 的K棒後呼叫 ctRepairBarGaps()。交易日曆用證交所 FMTQIK(rwd 版，一個月一個請求，當月每天上午/下午各更新一次，存 localStorage ct_tday_YYYYMM)；最近3個月內「比第一根晚、比最後一根早」卻不在K棒裡的交易日就是缺天。補值來源：ctMarketDay(日期)＝證交所 MI_INDEX(type=ALLBUT0999，找有「證券代號」「收盤價」欄位的表)＋櫃買每日收盤行情(新版 www/zh-tw/afterTrading/dailyQuotes，失敗改舊版 stk_quote_result.php)，一天一個請求涵蓋全市場，存 localStorage ct_mkt_日期(只留5天)；兩邊都沒有的才逐檔用 FinMind 補(每次開 App 最多 30 檔)。補上的K棒帶 filled 欄位(market/finmind)。</li>
         <li><b>補不到時</b>：最後一根的前一個交易日還缺，就在陣列上標 __gapPrev，computeScanRow 的 todayChgPct 改成 null(不顯示)，不顯示錯的數字。</li>
         <li><b>注意</b>：櫃買兩個網址的欄位沒在線上驗證過(櫃買網站擋外部抓取)，所以新版用欄位名稱找、舊版用固定位置；都失敗會走 FinMind。舊的掃描快照(scan_snapshot_)還是舊數字，重新掃描就會正確。</li>
+        <li><b>補強(同日 20:54 她回報排行還是超過10%)</b>：①CT_MAX_DAY_CHG＝10.6：computeScanMovers 不列入超過的(連舊快照一起擋)；computeScanRow 的 todayChgPct 超過且K棒多於20根(不是新股)就改 null。②抓取逾時拉長：FMTQIK 12 秒、證交所 MI_INDEX 25 秒、櫃買 20 秒(全市場資料大，手機走代理原本 8 秒可能不夠)。③補完會跳提示「資料源少了 MM/DD 的K棒，已自動補齊 N 檔」；交易日曆抓不到也會提示一次，方便判斷是哪一段出問題。已用 WebFetch 確認 tide-proxy 代理證交所 FMTQIK、MI_INDEX 都正常回 JSON，10/12、10/13 都在交易日裡。</li>
+      </ul>
+      <h3>64.21　跟著大戶：投信主導依連買天數細分</h3>
+      <ul>
+        <li><b>需求</b>：投信主導可以再選 1-2 日、3-5 日、6 日以上。</li>
+        <li><b>做法</b>：全域 watchlistTrustDays("all"/"1-2"/"3-5"/"6+"，記在 localStorage wl_trust_days)；WL_TRUST_DAY_BUCKETS 定義區間，看 trustConsecDays。renderWatchlistFilteredList() 在「投信主導」時多套一層天數篩選，並把各區間檔數交給 window.wlUpdateTrustDays 更新按鈕。按鈕列 .wl-drow 放在第一排篩選下面，只有選投信主導時顯示；原本的天數分級下拉(剛起步/確立中/認養股)保留。</li>
+        <li>新手導覽「篩選」步驟、說明文字同步更新。</li>
+      </ul>
+      <h3>64.22　魚小韭會不會選它(單檔診斷)</h3>
+      <ul>
+        <li><b>需求</b>：她自己挑的 6668 連兩天大漲，魚小韭沒選，想知道系統卡在哪。</li>
+        <li><b>位置</b>：個股「數據」頁最上面 #ct-why，按「檢查」才跑(ct-why-script，window.ctWhyNotPicked(sym))。</li>
+        <li><b>檢查順序</b>(跟 getXiaojiuCandidatePools 一致)：大盤狀態(強勢／確認轉弱) → 已持有 → ETF、空方訊號(多頭時忽略弱勢續跌)、價格上限、處置股 → 起漲/噴出型態(isPreBreakout/dailyStrongMatch/isSurgeCandidate/isBbSqueezeBreakout) → 動能過熱(分到噴出觀察) → 新鮮點火、週趨勢否決、5日警示、安全股數 → passesV3Gate(沒過分到噴出觀察，原因用 v3GateBlockReason 但把門檻數字拿掉) → 週20MA之下。噴出類再判斷飆股名單：大盤強勢、量能範圍、站上週20MA，以及在 surgeWatchCandidates 的第幾名。另外列長線條件(週線起漲/趨勢多頭、分數、週趨勢、5日警示、離週20MA太遠)。</li>
+        <li>掃描結果裡有這檔就用掃描的資料，沒有就用 computeScanRow 現算(選股時才算的週趨勢分數、5日警示、安全股數也補算)。只顯示這檔自己的數值，不顯示門檻。</li>
+        <li><b>6668 實測</b>(FinMind 真實日K)：10/12、10/13 都是「有強勢突破型態，但動能過熱 → 噴出觀察」，長線因為離週20MA太遠被擋。大盤強勢時會進飆股名單(追強保留位可買)。</li>
+        <li><b>另外發現(已修，見 64.23)</b>：6668 的週線圖丟「Value is null」，週K上的買賣點標記畫不出來。</li>
+      </ul>
+      <h3>64.23　週線買賣點消失(重複日期)＋飆股名單改看續噴</h3>
+      <ul>
+        <li><b>週線 Value is null 的原因</b>：一步步關掉功能找到是 renderWPatternDrawing()。頸線原本從左低點那週(l1.x)開始找最高點，6668 的 3/9 那個 W 頸線剛好就在左低點那週，連線三個點有兩個是同一週。lightweight-charts 3.8 的正式版遇到重複時間不會當場報錯，而是之後畫圖時丟「Value is null」，整張週線的標記都不見。修法：頸線只在兩個低點中間(l1.x+1 ~ l2.x-1)找，中間沒有K棒就不畫這個W。另外在 td-dark-chart-patch 的 setData 包一層：重複或倒退的時間先拿掉(保留後面那筆)，個股頁所有圖表都有這道保險。</li>
+        <li><b>飆股名單(surgeWatchCandidates)排序</b>：依 6/15~10/13 全市場 1787 次單日漲 7~10% 的後續(5日中位數)：收在漲停 +1.3%、沒鎖住 +0.6%；漲停＋量能&lt;1倍 +3.5%(隔天跟第二天都漲 44%)；漲停＋近60日漲幅&lt;15% +4.5%；漲停＋週乖離&gt;30% 約 0。改成：lockedLimitUp＝當日漲 ≥9.4% 且收在最高價(差 0.2% 內)；量能 &lt;1 倍但鎖漲停的也收(原本量能下限會擋)；續噴分數 surgeRunScore＝鎖漲停 2＋鎖漲停且量縮 1＋ret60&lt;15% 1＋週乖離&lt;15% 1，先比續噴分數再比動能，取前 8。追強保留位從最前面買。</li>
+        <li>單檔診斷的飆股名單那一行會顯示名次和續噴分數。</li>
+      </ul>
+      <h3>64.24　跟著大戶：外資連買天數可加減、天數排序</h3>
+      <ul>
+        <li><b>需求</b>：外資主導想用遞增／遞減的方式篩連買天數，好跟著外資買。</li>
+        <li><b>做法</b>：全域 watchlistForeignMin(預設1，localStorage wl_foreign_min)、watchlistDaysSort(""/desc/asc，wl_days_sort)。renderWatchlistFilteredList() 在外資主導時只留 foreignConsecDays ≥ 下限；有排序設定時依目前模式的連買天數排(外資看外資、投信看投信、其他看兩者較大)，同天數維持原本動能順序。.wl-frow-f 按鈕列只在外資主導時出現：－／＋(上限是目前名單裡最多的外資連買天數)、符合檔數、排序按鈕(依動能排→多到少→少到多 循環)。說明列會寫目前的排序方式。</li>
+        <li>新手導覽「篩選」步驟、說明文字同步更新。</li>
+      </ul>
+      <h3>64.25　融資狀態標上日期</h3>
+      <ul>
+        <li><b>問題</b>：10/14 收盤後指數 +0.59%，融資卡卻寫「洗盤中：大盤跌、融資大減」。查證：融資資料是 10/13(約22:00公布)，ctMarginDayInfo 用的是 10/13 的大盤漲跌，證交所 FMTQIK 10/13 確實 -960.65 點(約 -1.95%)，判斷本身沒錯，但畫面沒寫是哪一天。</li>
+        <li><b>做法</b>：renderMarginStatus() 在標題下加 .mg-day：「MM/DD・大盤 ±x.xx%・融資 ±x.x億（今天的融資晚上約22:00公布）」，是今天的資料就寫「今天」、不加後面括號。</li>
+      </ul>
+      <h3>64.26　ETF紅燈存股、ETF週K、數據頁法人5日、法人走勢圖不被切</h3>
+      <ul>
+        <li><b>紅燈存股</b>(ETF專區第三個分頁，view="save")：可選 00631L(預設)、0050、006208。讀 marketLightCache.state(沒有就先跑 loadMarketLight)：紅燈＝可以買，其他燈＝先存著。可輸入金額、價格記錄買進(localStorage etf_save_log_v1：日期、代號、金額、價格、股數＝金額÷價格無條件捨去)，顯示總投入、股數、平均成本、現值與損益，可刪除單筆。下面是 2020/6～2026/10 每月存1萬的回測摘要(固定買正二449萬、紅燈才買452萬、固定買0050 197萬；最慘帳面 -25% vs -34%；2022年資產縮水快一半)。</li>
+        <li><b>ETF週K</b>：單檔分析和紅燈存股都加黑底週K卡(window.tdWeeklyK，預設14個月、可切2年)。</li>
+        <li><b>數據頁法人5日</b>：fetchInstFlowHistory 多存自營商(dealer)；dtRenderFlow 在走勢圖上面加 dtInst5Html：近5個交易日外資、投信、自營商買賣超(張)和當天股價漲跌，最下面5日合計。</li>
+        <li><b>法人走勢圖被切</b>：外資、投信都是當天才開始買時，原本只畫最後4天，標記和「外資買」字擠在最右邊。改成至少畫近20個交易日(最多60)，右邊留白 14，靠近右邊的字改成往左寫；只有一天的累計買超畫成圓點。圖外框加 data-keep-color，避免投信的藍色被全站配色改成綠色(圖例和線顏色不一致)。</li>
+      </ul>
+      <h3>64.27　紅燈存股燈號讀不到、ETF週K拆分斷崖、說明文字改條列</h3>
+      <ul>
+        <li><b>燈號一直「計算中」</b>：marketLightCache 是 let 宣告，不在 window 上，ETF 區塊原本用 window[n] 讀永遠是 undefined。lightNow() 改用 eval 讀全域變數(gl())；沒有燈號時呼叫 loadMarketLight() 一次(同時多次呼叫共用同一個 promise)，算完再讀。</li>
+        <li><b>週K拆分斷崖</b>：00631L 拆分(約1拆22)、0050 2025/6 1拆4，資料源舊價格沒還原，週K從五百多掉到十幾、MA20 跟著往下拉。ETF 的 adjustSplits() 開放成 window.ctAdjustSplits，tdWeeklyK 在轉週線前先還原(前收÷今開 &gt;1.8 或 &lt;0.55 視為拆分/合併，之前的價格除以倍數、量乘倍數)，個股、ETF 的週K都適用。</li>
+        <li><b>說明文字</b>：「過去這樣存的結果」改名「過去回測」，用三欄表格(做法／期末現值／最大帳面虧損)加四點條列；ETF「這套方法在做什麼」改成「訊號說明」條列，只寫條件→動作，不寫門檻數字。</li>
+      </ul>
+      </ul>
+      <h3>64.28　短線改拉回優先、追強加量能條件、勝率分析修正</h3>
+      <ul>
+        <li><b>依據</b>：8/3～10/16 累積紀錄 6000 筆，缺價格的 103 檔用 FinMind 日收盤補齊後重算(抱5個交易日)。短線「分數前5」平均 +0.8%、勝率 45%；「拉回5檔＋排除過熱」+1.4%、53%，8/9/10 月都較好。追強(強勢多頭、動能前2) +8.6%、66%；加量能 1～2.5 倍後 +10.6%、79%(28筆)。同一批資料找規則又驗證，實際會打折。</li>
+        <li><b>短線(大盤分數&lt;80)</b>：p() 新增 pbMode(短線、非飆股/底部/0050/防禦)。候選池改看全部(不再只取前 3×need)，排序＝過熱(ctShortOverheated：週乖離&gt;15% 或近20日漲幅&gt;40%)放最後 → 動能分數由低到高 → 原順序；再套同產業上限。原本的乖離分段、當天大漲大跌往後排，在這個模式不用。倉位標 pick:"pullback"，理由寫「🧲拉回優先」。開盤跳空&gt;2%不追照舊。</li>
+        <li><b>大盤分數≥80</b>：拉回保留位的5檔先排除過熱。追強保留位改用 ctChaseList()：飆股名單只留量能 1～2.5 倍，上一次快照動能也&gt;80(cachedYesterdayScores)的排前面，再比動能。剩下空位照舊由飆股名單補。</li>
+        <li><b>新欄位</b>：候選股加 e.ret20(近20日漲幅)。</li>
+        <li><b>勝率分析</b>：「13/26死亡交叉」本身有斜線，被切成「空方訊號:13」。快照備註改寫成 13-26，分析時舊資料也先換掉再切。</li>
+        <li><b>累積紀錄上限</b>：後端一次最多回 6000 筆。新增 ctFetchAllSnapshotRows()：2026/6 起每月一段 from/to 分別查、合併去重；任何一段失敗就用原本一次查的結果。累積紀錄下載和選股勝率分析都改用它。後端如果本身只保留 6000 筆，舊資料就救不回來。</li>
+        <li><b>收盤價核對</b>：快照價格跟證交所收盤價核對 673 筆，10/10(加盤中、舊資料防呆)之後 61 筆全部相符；對不上的都在 10/10 之前，這次不用再改。</li>
+        <li><b>漏斗文字</b>：今日篩選漏斗拿掉 volMin/volMax/乖離上限/分數上限等門檻數字，只留各關擋掉幾檔。</li>
+        <li><b>並行測試</b>：「拉回優先 vs 分數前5」改名「對照組」，繼續記錄，用來確認換了之後真的比較好。</li>
+      </ul>
+      </ul>
+      <h3>64.29　魚小韭「強勢突破專屬位」</h3>
+      <ul>
+        <li><b>緣由</b>：她 10/12 照「突破＋爆量」買 6668，一週漲超過 20%，累積紀錄裡 6668 從沒被分到任何一類。</li>
+        <li><b>回測</b>(386 檔每日特徵，創 60 日新高＋收紅＋量能≥2 倍，抱 5 天)：8/20 後多頭 94 次，平均 +7.1%、勝率 62%；6/15～8/19 震盪期 94 次，平均 −0.8%、勝率 34%。量能 &gt;4 倍勝率 52%；近 60 日漲 &gt;60% 的 10 日平均 −3%。</li>
+        <li><b>條件</b>(ctBreakoutCandidates)：從 lastScanAllRows(沒有就用可見列)逐檔讀日K快取，收盤 ≥ 近 60 根最高收盤、當天漲 0～10.6%、量能＝今天量÷前 20 日均量在 2～4 倍、近 60 日漲幅 ≤60%、ctAboveWeekly20 不為 false、沒有空方訊號、不是處置股，依近 60 日漲幅由小到大，最多 8 檔。</li>
+        <li><b>開關</b>：ctBreakoutOn() 大盤 regime 為 BULL 或 STRONG_BULL，且 filterFunnel.marketConfirmedWeak 為假。</li>
+        <li><b>下單順序</b>：短線最先跑；XJ_BREAKOUT_SLOTS=1。p() 用 surge 模式(倉位 track:"surge"，出場走 checkXiaojiuSurgeExit：跌破日20MA、−7%、滿 7 個交易日)，pick:"breakout"，理由寫「⚡強勢突破專屬位｜創60日新高、量能x倍、近60日+y%」。</li>
+        <li><b>專屬保留</b>：多頭時若沒買到，bkReserve=1，之後追強、拉回、飆股補位、一般短線都用 freeShort() 當 cap，不會吃掉這格；非多頭不保留。追強的已持有數(chHeld)排除 pick:"breakout"。</li>
+        <li><b>紀錄</b>：快照備註加「強勢突破」，沒被其他分類寫到的另寫一列「強勢突破觀察」；勝率分析對照組多一列「⚡強勢突破」(依日期＋代號去重)。「魚小韭會不會選它？」結論後面會註明是否符合強勢突破。</li>
+      </ul>
       </ul>
     </div>
     <button class="read-more" data-target="sec-64"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
