@@ -2549,6 +2549,38 @@
         <li><b>下單順序</b>：短線最先跑；XJ_BREAKOUT_SLOTS=1。p() 用 surge 模式(倉位 track:"surge"，出場走 checkXiaojiuSurgeExit：跌破日20MA、−7%、滿 7 個交易日)，pick:"breakout"，理由寫「⚡強勢突破專屬位｜創60日新高、量能x倍、近60日+y%」。</li>
         <li><b>專屬保留</b>：多頭時若沒買到，bkReserve=1，之後追強、拉回、飆股補位、一般短線都用 freeShort() 當 cap，不會吃掉這格；非多頭不保留。追強的已持有數(chHeld)排除 pick:"breakout"。</li>
         <li><b>紀錄</b>：快照備註加「強勢突破」，沒被其他分類寫到的另寫一列「強勢突破觀察」；勝率分析對照組多一列「⚡強勢突破」(依日期＋代號去重)。「魚小韭會不會選它？」結論後面會註明是否符合強勢突破。</li>
+        <li><b>畫面</b>：renderXiaojiuBreakoutWatch() 在「底部起漲名單」下面放「⚡強勢突破名單」卡片(#xiaojiu-breakout-watch)，computeXiaojiuPlan 跑完時更新：列出符合的股票(量能倍數、近3月漲幅、收盤)，狀態列依序判斷：專屬位持有中 → 大盤不是多頭 → 短線格子全滿(空出的第一格先給強勢突破) → 有空位 → 今天沒有。說明文字不寫門檻數字。</li>
+        <li><b>大盤判斷統一</b>：ctBreakoutOn(regime) 改吃 filterFunnel.regime(getXiaojiuCandidatePools 當下算的那一次)。原因：10/16 漏斗寫 BULL、卡片寫不是多頭——分數 60 剛好在 55 分界附近，計畫執行中美股風力資料載入扣 10 分，第二次呼叫 computeMarketRegime 變成 NEUTRAL。filterFunnel 另加 regimeScore，卡片會寫「大盤現在是「中性」(50分)」。</li>
+        <li><b>手動加入</b>：名單每一列右邊有「加入」(.xj-bk-add)，打開原本的手動加入視窗(openXiaojiuManualAddModal，預設短線)，xiaojiuManualAddTarget.breakout=true；確認時若仍是短線，呼叫 executeXiaojiuBuy(..., "surge", "breakout")，理由「⚡強勢突破專屬位(手動加入)」。大盤不是多頭也可以手動買。executeXiaojiuBuy 新增第 7 個參數 pick。短線沒有空格時照原本提示。</li>
+      </ul>
+      </ul>
+      <h3>64.30　一鍵戰術套餐「點了沒反應」</h3>
+      <ul>
+        <li><b>查證</b>：手機觸控模擬點 11 個套餐，applyScanQuickPreset 都有執行(條件有開、ring-2 有加)。問題在畫面：底下 6 個是原本的 grid 按鈕，ring-2 幾乎看不到；「底部剛轉強」inline 背景 #D6FF5C 被全站配色規則換成藍底藍字，看起來永遠是選取狀態；結果在很下面，點完上方沒變化。</li>
+        <li><b>修正</b>：steadyStart 背景改 #F3F4F6。#scan-filter-bar .scan-quick-preset-btn.ring-2 加 3px 黑框＋::after「✓ 已套用」小標。applyScanQuickPreset 在 renderScanCards 後 toast「已套用「名稱」：符合 N 檔，結果在下方」(名稱取 SCAN_PRESET_GUIDE[e].name，N 取 renderScanCards 設的 window.ctLastScanCount)；還沒掃描過時 toast「已套用…開始掃描」。</li>
+      </ul>
+      </ul>
+      <h3>64.31　系統持有績效調整(日線獲利保護10%、週線停損8%)</h3>
+      <ul>
+        <li><b>資料</b>：FinMind 日K(OHLCV)抓 3037、4906、3034、2504(2025/3～2026/10/16)，加上原有 2330、2317、2454、2603、2382 長期資料，共 9 檔；在無頭瀏覽器用 App 自己的 simulateVCP(月線波段)與 computeWeeklyStrategy 跑，統計 2025/10/01 之後出場的交易。加權指數也抓了，用來測大盤濾網。</li>
+        <li><b>日線結果</b>(筆數／勝率／平均／獲利因子)：目前 36／42%／+3.2%／1.91；停損 7%、8%、10% 都差不多(最大虧損 -14.9% 是跳空跌穿)；不論賺賠跌破月線就出 51／27%／+1.4%／1.46(變差)；大盤站上月線才買 沒幫助；獲利保護啟動門檻 15%→12%／10%／8%：2.07／2.18／2.08，都比較好；10%＋不做「強勢回檔轉強」2.47(但只少 3 筆，證據不夠，放進手機驗證)。</li>
+        <li><b>採用</b>：新增 MA20SW_TRAIL_AT=0.10，simulateMa20Swing、數據頁出場線(兩處)、系統持有出場線都改用它。simulateMa20Swing 新增參數 ma20Always、protectAt、trailAt、skipIn、mktOk(預設不變)。</li>
+        <li><b>週線</b>：WEEKLY_STOP_PCT 10→8。週停損 7/8/10/12/15%：8% 賺的筆數一樣，停損出場平均 -14.1%→-12.5%，獲利因子 7.23→7.88；7% 停損次數變 7 次、總報酬變差。週線整體本來就很好(18 筆平均 +27%)，主要靠少數大波段。</li>
+        <li><b>手機驗證</b>：runDailyRuleLab 的比較組改成：目前(10/17)、舊(賺15%才保護)、不做強勢回檔轉強、最大停損-8%、跌破月線就出場、上一版引擎。系統持有快取 key 改 ct_sysholds_v3，部署後會重算。</li>
+        <li><b>限制</b>：只有 9 檔、近一年大多是多頭；「最近出場」那排虧損多數是 10/13、10/15 大盤急跌造成。</li>
+      </ul>
+      <h3>64.32　週K小圖加畫布林通道、KAMA</h3>
+      <ul>
+        <li><b>需求</b>：她要在 K 線小圖上看布林、KAMA 的線(一開始誤做成篩選條件，已整段拿掉)。</li>
+        <li><b>開關</b>：scan-filter-v2-script「長線門檻」區塊新增「K線小圖」兩個勾選(#ct-sc-ov-bb、#ct-sc-ov-kama)，存 localStorage tdwk_bb、tdwk_kama；切換時呼叫 window.tdWeeklyKSetOverlay(k,on)，把已經畫好的 .tdwk-lazy 小圖重畫。</li>
+        <li><b>畫法</b>：wk-dark-script 的 draw()(window.tdWeeklyK，掃描卡片、長線名單彈窗、ETF 都用它)讀 tdWkOverlay()：布林＝週20MA±2倍標準差(母體)，藍色虛線 #5BA7F7，autoscaleInfoProvider 回 null 不影響價格軸、下軌 ≤0 不畫；KAMA＝computeKAMA(週收盤,10,2,30)，紫色 #C084FC。標題下多一行顯示最新的布林上下軌和 KAMA。價格軸負數刻度不顯示(原本量能區的留白會出現 -400 之類的刻度)。</li>
+      </ul>
+      <h3>64.33　全市場掃描 500→800 檔</h3>
+      <ul>
+        <li><b>改動</b>：SCAN_CAP_DYNAMIC 500→800，buildDynamicScanList() 改用這個常數取成交量前 N 檔(原本寫死 slice(0,500))。</li>
+        <li><b>連帶</b>：波段飆股回顧匯出也用同一份名單，所以也變 800 檔。流動性排除(單日 &lt;1000 張)照舊。</li>
+        <li><b>篩選開關</b>：「只看成交量前500大」改成「只看成交量前800大」(slice 500→800)；內部名稱 vol-top500 / scanVolTop500On 沒改，舊的已存設定可沿用。</li>
+        <li><b>代價</b>：併發 6 檔不變，掃描時間大約多六成。</li>
       </ul>
       </ul>
     </div>
