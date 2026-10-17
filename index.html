@@ -2581,6 +2581,24 @@
         <li><b>連帶</b>：波段飆股回顧匯出也用同一份名單，所以也變 800 檔。流動性排除(單日 &lt;1000 張)照舊。</li>
         <li><b>篩選開關</b>：「只看成交量前500大」改成「只看成交量前800大」(slice 500→800)；內部名稱 vol-top500 / scanVolTop500On 沒改，舊的已存設定可沿用。</li>
         <li><b>代價</b>：併發 6 檔不變，掃描時間大約多六成。</li>
+        <li><b>補修(實測只有 386 檔)</b>：原因是清單來源先砍掉單日 &lt;1000 張的股票(即時抓取那條路寫死 1000)，掃描時又用 5 日均量 ≥1000 張當門檻，符合的本來就只有三四百檔，上限改 800 碰不到。新增 SCAN_LIQ_MIN_LOTS=500：fetchTurnoverUniverse(minLots) 拆出 fetchTurnoverUniverseLive(minLots)；buildDynamicScanList 用 500 張門檻，雲端快照非 ETF 不到 800 檔時再即時抓 TWSE/TPEx 合併；computeScanRow 鯨魚雷達的流動性關卡改看 5 日均量 ≥ SCAN_LIQ_MIN_LOTS。標籤從「N檔(&gt;千張)」改成「N檔」。外資連買卡片等其他呼叫 fetchTurnoverUniverse() 不帶參數，維持 1000 張。</li>
+        <li><b>設定頁</b>：新增「設定→鯨魚雷達掃描範圍」(#settings-section-scan)：掃描檔數 500/800/1000/1200(預設 800，localStorage ct_scan_cap)、最低成交量 300/500/1000 張(預設 500，ct_scan_liq)。程式改讀 ctScanCap()/ctScanLiq()；改了會清掉 dynamicScanList 快取，下次掃描生效。清單也會先剔除低於門檻的股票再取前 N 檔。</li>
+      </ul>
+      <h3>64.34　全面檢查(10/17)</h3>
+      <ul>
+        <li><b>方法</b>：ESLint(no-undef、重複key等)、重複 id／找不到的 id、逐頁點擊收集錯誤、用 9 檔真實日K跑掃描與個股頁檢查 NaN/undefined、事件重複綁定檢查。程式本身沒有語法或未定義錯誤，以下是邏輯問題。</li>
+        <li><b>模擬資料被當候選</b>：fetchStockForScan／fetchStockDataMulti 全部來源失敗時用 generateMockData(隨機K線)，computeScanRow 照樣判斷訊號。scanWatchlist 現在把 source="mock" 的列訊號旗標歸零、score=-1，不進可見清單；getXiaojiuCandidatePools 也排除 mock(便當原本就有排除)。</li>
+        <li><b>相對強勢隨機</b>：0050 抓不到時也是模擬資料，computeRelativeStrength 會算出隨機結果(實測同一份資料兩次掃描 isStrong 不同)。0050 為 mock 時改傳 null，不算相對強勢。</li>
+        <li><b>魚小韭用錯掃描範圍</b>：computeXiaojiuPlan 原本直接用 lastScanVisibleRows，最後掃的是「我的自選股」就只會從自選股挑。拆成 computeXiaojiuPlanCore；外層在範圍不是鯨魚雷達時，借用今天的 ctScanSnapMem.master，算完還原；沒有今天的鯨魚雷達結果就提示先掃。</li>
+        <li><b>台北日期</b>：15 處 new Date().toISOString() 當日期(00:00～08:00 會變前一天)改 taipeiDateStr：魚小韭 entryDate(3 處)、xiaojiuLog、換股、加入魚池、魚池表單預設日期、自選股訊號確認、股利、估值、掃描狀態快取、今日決策標題、備份檔名、10/5 補救紀錄。</li>
+        <li><b>公告未讀</b>：登入頁原本永遠顯示全部則數；改存 localStorage ct_ann_seen(看過的最新日期)，只算之後的新公告，第一次用近 7 天。</li>
+        <li><b>燈號用詞</b>：大盤燈號是收盤對 MA20、MA100，ETF 區 LIGHT_TXT 原本寫「季線」(60日)，改成「長均線」。</li>
+        <li><b>省電</b>：檔案前段 7 個每秒輪詢(隱藏畫線工具按鈕、週線均線列 hook 等)加 document.hidden 就跳過。</li>
+        <li><b>後續補修(同日)</b>：
+          ①國定假日：新增 ctCheckHolidayToday()/ctIsHolidayToday()：09:10～13:45 之間抓加權指數即時報價，日期不是今天就判定休市(同一天判定一次，失敗不影響)。「我的持股」phase() 與 isTaiwanMarketHours() 都會看這個旗標。
+          ②出場線集中：新增常數 MA20SW_STOP_PCT=12、MA20SW_PROTECT_AT=0.08，以及 ctWeekly20Now(bars)、ctMa20SwingExitLines(entry, highest, close, ma10, ma20, w20)。simulateMa20Swing 預設值、dtDailyExit、renderDailyPnlPanel、系統持有 analyse 都改用它們。用 4 檔 × 4 種持倉情境比對新舊版，數字完全相同。
+          ③「只看成交量前800大」改「前300大」(slice 300；內部名稱 vol-top500 不變)。
+          ④computeRelativeStrength：0050 依股票最後一根和 60 根前的日期找對應K棒算漲幅，找不到才退回原算法。</li>
       </ul>
       </ul>
     </div>
