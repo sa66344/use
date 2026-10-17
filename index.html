@@ -2600,6 +2600,14 @@
           ③「只看成交量前800大」改「前300大」(slice 300；內部名稱 vol-top500 不變)。
           ④computeRelativeStrength：0050 依股票最後一根和 60 根前的日期找對應K棒算漲幅，找不到才退回原算法。</li>
       </ul>
+      <h3>64.35　早安速報</h3>
+      <ul>
+        <li><b>何時跳</b>：週一到週五，台北時間 05:00～08:59 第一次打開 App(登入畫面關掉後)自動跳一次，localStorage ct_mb_shown 記日期；週末、9 點後不自動跳。首頁「我的持股」上方「☀️ 早安速報」按鈕(#mb-open-btn)隨時可開，window.ctMorningBriefOpen(full)。</li>
+        <li><b>版面</b>：先跳精簡版(結論一句＋美股/費半/夜盤/台積ADR 標籤＋持股要注意的＋事件＋一則提醒)，「看詳細」換成從下往上的完整版(結論、昨晚美股六格含美股風力、台指期夜盤點數與預估開盤、持股清單、今天的事件、今天怎麼做)。按持股列會跳到該股日線。</li>
+        <li><b>資料</b>：fetchUsMarketSnapshot(標普/那指/費半/VIX)、fetchUsTicker("TSM")、fetchTaiexFuturesQuote(IX0126.TW)、lastWindIndexResult(超過 3 小時重算)、marketLightCache(預估開盤＝昨天加權收盤×(1+夜盤%))、ensureHedgeDicts(今天除權息、處置)。持股用 my-holdings-script 新增的 window.ctMyHoldingsBrief()：盤前模式跑 analyze，只看真實持有。</li>
+        <li><b>判讀</b>：開盤方向用夜盤%(抓不到用美股平均的一半)分開高/小漲開/平盤附近/小跌開/開低。持股：收盤已跌破出場價或狀態出場＝今天要賣；離出場價 3% 內＝收盤守 X；達標、留意；其餘安全。今天怎麼做最多 3 點：要賣的持股、開高不追/開低等收盤、最危險一檔、美股波動(VIX 大漲或風力偏高)、大盤燈號。</li>
+        <li><b>限制</b>：網頁 App 不能主動推播，要打開才會出現；平日國定假日早上無法預先判斷休市。</li>
+      </ul>
       </ul>
     </div>
     <button class="read-more" data-target="sec-64"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
