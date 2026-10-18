@@ -2786,6 +2786,45 @@
         <li><b>虛擬筆記</b>：#aq-mock-hero(練習的未實現損益、練習中、獲利中、虧損中)，原本的 #mock-summary-card 隱藏；卡片頂端色條依 mockSettlementSnapshot 的賺賠。</li>
         <li><b>放寬</b>：持股頁容器左右留白拿掉、區塊背景透明。舊的全域樣式用 html:not(#_ct1):not(#_ct2) 加 !important，新樣式全部加 html:not(#_aq1):not(#_aq2):not(#_aq3) 前綴才蓋得過；標題列用 JS 隱藏(hideHeader)。</li>
       </ul>
+      <h3>64.57　紅綠燈顛倒、持股選單修正</h3>
+      <ul>
+        <li><b>紅綠燈</b>：戰術策略卡 .tt-lights 三顆燈由上到下是紅、黃、綠，原本 on 的條件寫成 lv 2(進攻)亮第一顆，所以先防守亮綠燈。改成 lv 0(防守)亮紅、1 亮黃、2(進攻)亮綠。</li>
+        <li><b>拿掉總覽卡</b>：她覺得「我的追蹤」深色總覽太佔位置，paintMenu 不再畫 #aq-main-hero(舊的會刪掉)。</li>
+        <li><b>點方塊換頁</b>：改版 CSS 的 #aqua-main-menu.aq-menu{display:flex} 蓋過了 Tailwind 的 .hidden，goToAquaSection 隱藏選單沒效，功能頁就接在選單下面，頁面變很長。補 #aqua-main-menu.aq-menu.hidden{display:none!important}，點方塊就換成那一頁，按返回回選單。秘密愛心便當本來就是全螢幕。</li>
+        <li><b>布告欄被誤改</b>：布告欄的項目也有 data-target="aqua-section-holdings"，querySelector 先找到它，把「幾檔・幾檔要注意」和賺賠小標塞進布告欄。選擇器改成只找 .aqua-menu-btn。</li>
+      </ul>
+      <h3>64.58　舊計畫用新規則重算</h3>
+      <ul>
+        <li><b>她的問題</b>：更新後魚小韭還是只顯示長華。原因是畫面上的計畫(ct_xj_last)是 10/16 用改版前的程式算的(沒有 why 欄位，所以也沒有「為什麼只買了幾檔」卡)；假日 ctXjAutoRun 只在掃描資料日期＝今天時才跑，prevRunBtn 又只在掃描資料比計畫新的時候才出現，所以要等到下個交易日收盤才會重算。</li>
+        <li><b>做法</b>：prevRunBtn 判斷 last 沒有 why 就是舊計畫。沒有掃描結果時顯示提醒「先到選股頁跑一次鯨魚雷達」；有同一天(全市場、收盤後)的掃描結果時顯示「用新規則重算 10/16 的計畫」，按下去跑 computeXiaojiuPlan。</li>
+      </ul>
+      <h3>64.59　手動選股大補包・精選(開發者)</h3>
+      <ul>
+        <li><b>她的要求</b>：想手動選股，要一個結合網站最精華選股的地方；先只做「精選」分頁，只有開發者看得到。</li>
+        <li><b>入口</b>(bp-pack-script)：isVipUnlocked() 而且有鯨魚雷達結果時，#scan-list 前面插 #bp-entry；點了開全螢幕 #bp-panel(z-index 90，左上返回)。window.ctBpOpen() 也能打開。</li>
+        <li><b>合哪些名單</b>：強勢突破 ctBreakoutCandidates(rows)；getXiaojiuCandidatePools({long:[],short:[]}, rows) 的 surgeWatchCandidates(飆股名單)、shortCandidates 去掉過熱後動能最低 8 檔(拉回買點)、longCandidates 前 12 檔(長線)；findBottomRiseCandidates(底部起漲)；鯨魚雷達分數前 10；外資連買(consecDays≥3)、投信連買(≥2)用 lastForeignBuyRaw／lastTrustBuyRaw，沒載入就自己打 /api/foreign-streak-buckets，只拿來標記已在名單裡的股票。ETF 排除。</li>
+        <li><b>檢查</b>：大盤多頭(BULL／STRONG_BULL)、創 60 日新高或突破下降趨勢線(ctDailyTrendBreak)、成交量 ≥ BREAKOUT_MIN_LOTS、站上週 20MA(ctAboveWeekly20)、法人在買、乖離 &lt;10%。畫面只寫結果。</li>
+        <li><b>排序</b>：名單數×10(鯨魚雷達高分算半份)＋檢查通過數×2＋(過去勝率−50)÷5，取前 12。過去成績讀買點追蹤的 ct_bt_stat_v3 groups：強勢突破、飆股、底部起漲、魚小韭長線用「買點種類」，拉回用「短線動能・拉回型」，至少 10 筆才顯示，挑勝率最高的一種。</li>
+        <li><b>金額</b>：照魚小韭預算 getXiaojiuCapital()：單檔上限 XJ2_MAX_POS_PCT、最多虧 XJ2_RISK_PCT；停損 ctXjStopPrice(長線用週20MA、其他用日20MA，停損至少留 3%)。股數＝min(上限÷價格, 可虧金額÷(價格−停損))。</li>
+        <li><b>燈號</b>：讀今日頁戰術策略卡的 .tt-verdict(tt-def/cau/atk)；沒畫過就用大盤格局。加上 ctXjTargetPct 的建議成數。先防守時上面提醒今天不建議新買；盤中掃描提醒收盤後再看。</li>
+        <li><b>按鈕</b>：放進觀測槽(addSymbolToAquariumWatch)、加自選(openWatchlistFolderModal)、看圖表(loadStock＋switchTab("daily"))。</li>
+      </ul>
+      <h3>64.60　大補包變成獨立分頁、掃描分頁加底色</h3>
+      <ul>
+        <li><b>她的要求</b>：大補包要獨立一頁，放在選股「掃描」左邊，名稱寫「大補包」；掃描分頁要有顯眼底色；清單只有代號沒有中文名稱。</li>
+        <li><b>獨立分頁</b>：bp-pack-script 開機時在 #panel-scan 後面建 #panel-bpack，#tabbar-scroller 的掃描按鈕前面插 data-tab="bpack"；bottom-nav-script 的選股群組 tabs 加上 "bpack"(第一個還是 scan，按底部「選股」照舊先到掃描)。包一層 window.switchTab：切到 bpack 時整理名單，掃描結果沒變就用上次的。非開發者時分頁按鈕加 .bp-tab-off 藏起來。原本掃描結果上面的入口拿掉。</li>
+        <li><b>分頁寬度</b>：四個分頁原本 min-width 92px 會擠出畫面，改成 min-width 0、圖示 16px。掃描按鈕：亮綠底、黑框、圓角。</li>
+        <li><b>中文名稱</b>：名單資料沒有 name 時用 stockName(代號)。</li>
+        <li><b>成交量不明的原因</b>：掃描日K暫存(scanStockCache)只留最近 160 檔，findBottomRiseCandidates 抓股票時會把前面的擠掉。改成每份名單一出來就先把日K存在自己的 BM，最後還缺的用 fetchStockForScan 一次 6 檔補抓。</li>
+        <li><b>大盤檢查用詞</b>：computeMarketRegime 不是 BULL／STRONG_BULL 時寫「大盤還不夠強」，避免和戰術策略的「大盤多頭拉回」字面打架。</li>
+      </ul>
+      <h3>64.61　魚小韭重新計算、下次下單日、存錢按鈕</h3>
+      <ul>
+        <li><b>她的問題</b>：用新規則重跑後還是有長華(這次是長華＋邁達特，「為什麼只買了 2 檔」寫看過的候選只有 2 檔、大盤還不夠強所以追強和飆股名單不開)，想要能隨時再更新；要寫出下次買進日期；存錢計畫改成 1000 按了沒反應。</li>
+        <li><b>重新計算</b>：ctXjRunCore 每次執行前把 CT_XJ_PRE_KEYS(現金、長短線持股、歷史、手動標記、資產曲線)原樣存到 ct_xj_pre。狀態卡多一顆「改了預算或設定？重新計算這次的計畫」(data-xj="redo")：要有同一天的全市場收盤掃描結果；把 ct_xj_pre 放回去、清掉這天的「我都下單了」，再跑 computeXiaojiuPlan。掃描資料比計畫新時提示改按「用某天收盤的結果先算一次」。存錢(deposit)、改預算(保留持股)時 preCash() 把備份裡的現金一起加，從頭開始時刪掉 ct_xj_pre。</li>
+        <li><b>下次下單日</b>：nextTrade(資料日) 取下一個平日；沒有國定假日行事曆，提示文字寫「遇到國定假日就順延」。標題改成「10/19（一） 開盤要做的事」，下單提示也寫日期。</li>
+        <li><b>存錢按鈕沒反應</b>：輸入框原本只在 change(失去焦點)時存值並重畫畫面，打完數字直接點按鈕時，重畫把按鈕換掉，點擊就沒了。改成 input 時就存值、只改按鈕上的金額不重畫；deposit() 直接讀輸入框的數字。</li>
+      </ul>
       </ul>
     </div>
     <button class="read-more" data-target="sec-64"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
