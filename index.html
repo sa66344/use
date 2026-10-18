@@ -2759,6 +2759,33 @@
         <li><b>分析</b>：魚小韭 vs 0050、系統 vs 手動、每週損益、下載今日資料、歷史紀錄、規則說明、修改預算。</li>
         <li>新手導覽改成講四個分頁。</li>
       </ul>
+      <h3>64.54　魚小韭：為什麼只買幾檔、停損至少留 3%、無腦買進算系統</h3>
+      <ul>
+        <li><b>她的測試</b>：週日用週五收盤算一次，預算 1 萬只買了長華一檔，而且停損線只差 1.4%，還被標手動。</li>
+        <li><b>為什麼只買幾檔</b>：computeXiaojiuPlanCore 加 xjWhy 計數：看過的候選(cand)、在防守均線下跳過(ma)、一股太貴(price，xjSkipPrice)、開盤跳空跳過(gap)、這次可投入金額(budget0)和剩下(left)、大盤分數&lt;80 追強飆股不開(chaseOff)、強勢突破開著但沒有股票(bkNone)。存在 ct_xj_last.why，「今天」分頁的 whyCard 顯示。測試資料：7 檔候選、4 檔在均線下、1 檔太貴、買 2 檔。</li>
+        <li><b>停損至少留 3%</b>：ctXjAdjDef(d, entry)：自動駕駛開著、防守均線在 買價×0.97～買價 之間時，改成買價×0.97；均線低於這個就照均線、高於買價(漲上去了)就照均線往上移。ctXjStopPrice(算股數)、主出場迴圈的防守價、部位卡的停損都用這個，三者一致。長華例子：52.2、週20MA 51.47 → 50.63。</li>
+        <li><b>手動標記</b>：長華是從舊畫面「戰略視窗」的無腦買進(executeXiaojiuBuy)買的，所以被當手動。xiaojiuLog 遇到理由含「無腦買進」(戰略視窗、秘密愛心便當)一律算系統，只有手動買進、手動加入、換股才算手動。</li>
+      </ul>
+      <h3>64.55　秘密愛心便當：飆股便當</h3>
+      <ul>
+        <li><b>她的要求</b>：照 6668 的選法做特別模式，放在原本的秘密愛心便當裡用切換；無腦買進算系統，打開就是驚喜。</li>
+        <li><b>做法</b>(bento-surge-script，外掛在原本的 liteZen 程式上，一般便當完全沒動)：#lite-zen-setup 上面插 #bz-top(一般／飆股切換，ct_bento_mode)、大盤狀態列、便當盒；下面插「最近開過的便當」(lite_zen_history 前 5 檔，到現在漲跌，飆股便當幾檔賺幾檔賠)。</li>
+        <li><b>能不能開</b>：ctBreakoutOn()(BULL／STRONG_BULL)而且大盤燈號不是確認轉弱。不能開時便當盒變灰、按鈕變「改開一般便當」(攔截點擊只切換模式)。</li>
+        <li><b>選股</b>：覆寫 liteZenPickSurge：飆股模式時候選＝ctBreakoutCandidates(突破＋成交量 ≥5000 張＋量能 2～4 倍＋近60日漲幅上限＋站上週20MA)＋大盤分數≥80 時的 surgeWatchCandidates；價格要在單檔預算內；停損 ctXjStopPrice("surge")，換成 stopPct 給原本的卡片算防守底線、最大損失。沒有股票時 liteZenRenderEmpty 改寫成「今天的飆股便當是空的」或「今天不開飆股便當」。</li>
+        <li><b>卡片</b>：覆寫 liteZenRenderCards，原本卡片畫完後加：最上面「今天的驚喜 N 檔」、第幾檔標籤、近 20 天小圖、成交張數、量能幾倍、近 60 天漲幅、出場規則(跌破日20均線或虧7%、最多抱7天)，按鈕改「無腦買進（魚小韭幫你記）」。買進走原本的 executeXiaojiuBuy(track surge)。</li>
+        <li><b>紀錄</b>：liteZenSaveHistoryEntry 存完把 mode 寫進那筆紀錄。畫面不寫門檻數字(5000 張只寫「成交量夠大」)。</li>
+      </ul>
+      <h3>64.56　持股頁改版(魚小韭以外的功能)</h3>
+      <ul>
+        <li><b>她的要求</b>：持股頁每個功能都太扁、太單調、太窄；照建議的兩排方塊版本，五個畫面都改。</li>
+        <li><b>做法</b>(aq-restyle-script，放在 bento-surge-script 後面，只加外觀不動原本邏輯)：讀現有清單的資料(holdStats 讀 #aqua-holdings-list 卡片、watchStats 讀觀測卡的 a/t 進度)再畫上去；MutationObserver 監看清單、面板顯示時每 3 秒更新；window.ctAqRefresh 可手動重畫。</li>
+        <li><b>選單</b>：最上面 #aq-main-hero「我的追蹤」(未實現損益、追蹤中幾檔、要注意幾檔、觀測槽幾檔)；功能改成兩欄彩色方塊(第三塊佔兩欄)，右上角 .aq-st 狀態小標，說明文字即時(持股數、魚小韭總資產、今天能不能開飆股便當)；通知設定移到最下面。</li>
+        <li><b>追蹤魚池</b>：#aq-hold-hero 深綠總覽(未實現損益、成本、市值、要注意幾檔)，資訊重整按鈕搬進總覽；卡片頂端色條依狀態(data-band r 觸及下限／y／g 獲利)，大字現價和賺賠，近 30 天小圖畫成本、下限、目標三條虛線。</li>
+        <li><b>潛在觀測槽</b>：#aq-watch-hero(觀測中、快亮燈、已亮燈)；卡片左邊進度圈(符合幾項／全部)，條件改成小標籤(打勾綠色、沒達到灰色)，原本的進度條隱藏。</li>
+        <li><b>快速試算</b>：#aq-rk-hero 深色輸入卡，把代號、資金、波段／短線、風險滑桿、啟動按鈕搬進去。</li>
+        <li><b>虛擬筆記</b>：#aq-mock-hero(練習的未實現損益、練習中、獲利中、虧損中)，原本的 #mock-summary-card 隱藏；卡片頂端色條依 mockSettlementSnapshot 的賺賠。</li>
+        <li><b>放寬</b>：持股頁容器左右留白拿掉、區塊背景透明。舊的全域樣式用 html:not(#_ct1):not(#_ct2) 加 !important，新樣式全部加 html:not(#_aq1):not(#_aq2):not(#_aq3) 前綴才蓋得過；標題列用 JS 隱藏(hideHeader)。</li>
+      </ul>
       </ul>
     </div>
     <button class="read-more" data-target="sec-64"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
