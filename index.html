@@ -2951,6 +2951,19 @@
         <li><b>魚小韭取消新買時</b>：強勢突破專屬位那行「今天沒有合格股票」不再出現(本來會誤會)。</li>
         <li><b>外資數字對照</b>：App 寫「外資連續賣超 11 天、近 5 日累計 -5,250 億」，新聞(時報資訊 10/20)寫「連 10 日共提款 8,380 億、本月累計賣超 7,416 億」。5 日和 10 日是不同區間，數字不衝突；天數差 1 天，可能是 App 的資料把外資自營商或櫃買也算進去，要看 Worker 的資料來源才能確定。</li>
       </ul>
+      <h3>64.79　功能重新規劃(10/21)</h3>
+      <ul>
+        <li><b>她的決定</b>：虛擬筆記、系統持有留著；便當收進今天的名單(她喜歡看飆股、卡片)；大盤判斷用統一的那套；成績單放在更多；一次全部改。</li>
+        <li><b>程式</b>：ia2-script(放在 us-guard-script 後面)，每 1.5 秒整理一次；搬家只對開發者(isVipUnlocked)，一般訪客看到的位置不變，只有大盤判斷統一大家都套用。</li>
+        <li><b>①大盤判斷統一</b>：ctMarketUnified() 讀 computeMarketRegime()：強力多頭/多頭＝進攻、中性＝小心、偏弱/空頭＝防守；建議成數＝ctXjTargetPct(跟魚小韭同一個)。儀表板「今天的結論」標題改成「大盤X・進攻/小心/防守」，下面一行建議成數＋昨晚費半，再三行新買／持股／短線(持股有該賣、危險時多一行)；原本的 .dk-hero-c 藏起來。快捷鍵「大盤燈號」改成「大盤」顯示統一燈號；「戰術策略」快捷鍵、標題列、模組(#today-tomorrow-module)藏起來(模組照樣在背景算)。加權指數卡的 #taiex-light-row(包住 renderTaiexLightRow)和標題列小字也換成統一燈號。ctTacticLogUpdate 包起來，不管傳什麼都記統一燈號，戰術成績單對的是統一燈號。</li>
+        <li><b>②分頁</b>：bottom-nav GROUPS：選股＝scan、whales、bpack；更多＝info、report、control。bpack 標籤「今天的名單」、control 標籤「選股成績」(頁面標題跟著改)、新分頁 report「成績單」(#panel-report)。HIDE_TABS 加 report。</li>
+        <li><b>今天的名單</b>(bp-pack-script)：標題改名；最上面「今晚的便當」卡(飆股便當／一般便當，設 ct_bento_mode 後 liteTogglePanel() 打開原本的便當)；卡片上方分類篩選 全部／飆股(bk、sw)／拉回(pb)／長線(lg、bt)／法人(fx、tr)，記在 ct_bp_flt；按鈕「放進觀測槽」改「放進等買點」；長線名單 #swing-list-card 搬到 #panel-bpack 最下面(訪客留在掃描頁)。</li>
+        <li><b>③持股選單</b>：開發者藏起快速試算(aqua-section-rookie)、潛在觀測槽(aqua-section-watch)、秘密愛心便當(#aqua-lite-panel-btn)三格；儀表板 #dashboard-snapshot-btn 藏起來(成績單有)。追蹤魚池的格子和頁面標題改「我的持股」(大家都改)。</li>
+        <li><b>自選：等買點</b>：#aqua-section-watch 整塊搬到自選 #wt-pager 上面的黃色列 #ia-wait 裡，按一下展開(最高 58vh 可捲動)，展開時 renderAquariumWatch()。資料還是 aquariumWatch，條件到了一樣亮燈。</li>
+        <li><b>④成績單</b>：卡片連到 選股成績(switchTab control)、今天的名單紀錄(捲到 .bp-hc)、便當紀錄(打開便當)、魚小韭成績(ctXjOpenTab("ana"))、戰術成績單(直接嵌 ctTacticLogUpdate 的內容)、法人規律驗證(跟著大戶頁捲到那段)、下載中心(ctDlcOpen)、存今日快照(saveXiaojiuDailySnapshot)。xj2-script 多開放 window.ctXjOpenTab、window.ctDlcOpen。</li>
+        <li><b>新手導覽</b>：導覽分兩套。TOURS_G 是原本的(一般訪客用)；TOURS_D 從 TOURS_G 複製後改成新位置(開發者用)，T()、ORD() 依 isVipUnlocked 選一套。開發者版：認識 Tidy 五個分頁和一天怎麼用改寫；今日・儀表板拿掉大盤燈號、戰術策略兩步，今天的結論改成統一燈號的說明，最後加「盯著」；新增今日・盯著(買前體檢、本金、盤中盯盤、從自選加、提醒)、選股・今天的名單(便當、分類、精選卡片、前幾天的精選、長線名單)、更多・成績單；掃描拿掉長線名單那步；持股拿掉快速試算、潛在觀測槽，追蹤魚池改我的持股；自選加「等買點」；更多加成績單。開發者的導覽順序沒有快速試算、潛在觀測槽兩段。TAB2TOUR 加 live、bpack、report；找不到對應導覽時不跳提示。</li>
+        <li><b>盯著</b>：盯盤卡片名稱旁標「持股」(黑底)或「自己加的」；買前體檢結果右上 ✕ 清掉結果和代號；盤中盯盤「＋ 從自選加」列出所有自選清單裡還沒在盯的股票。買前體檢多一格「本金」(ct_lv_cap)：停損＝ctXjStopPrice 短線規則(日20MA 和 -7% 取高)，安全股數＝min(本金÷股價, 本金×2%÷(股價−停損))，列跌破就走、安全股數、最多虧、一張要多少；比例不寫在畫面上。</li>
+      </ul>
       </ul>
     </div>
     <button class="read-more" data-target="sec-64"><span class="label">繼續閱讀</span><span class="arrow">→</span></button>
